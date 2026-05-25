@@ -25,5 +25,6 @@
     <file src="..\..\src\core\**\*.cs" target="content\core" />
     <file src="..\..\src\mcp\**\*.cs"  target="content\mcp" />
     <file src="README.md" target="" />
+    <file src="README.ko.md" target="" />
   </files>
 </package>

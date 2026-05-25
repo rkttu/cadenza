@@ -1,5 +1,7 @@
 # Cadenza
 
+> Read this in [한국어](README.ko.md).
+
 `Cadenza` is the console variant of the Cadenza SDK family — a single-file scripting MSBuild SDK for .NET 10+ file-based apps.
 
 ## Quick start
@@ -8,7 +10,7 @@ Create a `hello.cs` file:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.1
+#:sdk Cadenza@1.0.7
 
 foreach (var file in Glob("**/*.md"))
 {
@@ -29,4 +31,4 @@ Publish as a self-contained single binary:
 dotnet publish hello.cs -r linux-x64 -c Release
 ```
 
-See the [project repository](https://github.com/rkttu/cadenza) for the full specification and the Worker / Web variants.
+See the [project repository](https://github.com/rkttu/cadenza) for the full specification and the Worker / Web / Mcp variants.

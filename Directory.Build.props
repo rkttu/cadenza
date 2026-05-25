@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
-    <Version Condition=" '$(Version)' == '' ">1.0.6</Version>
+    <Version Condition=" '$(Version)' == '' ">1.0.7</Version>
     <PackageProjectUrl Condition=" '$(PackageProjectUrl)' == '' ">https://github.com/rkttu/cadenza</PackageProjectUrl>
     <RepositoryUrl Condition=" '$(RepositoryUrl)' == '' ">https://github.com/rkttu/cadenza.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

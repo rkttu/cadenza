@@ -24,5 +24,6 @@
     <file src="Sdk\Sdk.targets" target="Sdk\Sdk.targets" />
     <file src="..\..\src\core\**\*.cs" target="content\core" />
     <file src="README.md" target="" />
+    <file src="README.ko.md" target="" />
   </files>
 </package>

@@ -1,5 +1,7 @@
 # Cadenza.Worker
 
+> Read this in [한국어](README.ko.md).
+
 `Cadenza.Worker` is the worker / daemon variant of the Cadenza SDK family — a single-file scripting MSBuild SDK that wraps `Microsoft.NET.Sdk.Worker`.
 
 ## Quick start
@@ -8,7 +10,7 @@ Create a `heartbeat.cs` file:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.1
+#:sdk Cadenza.Worker@1.0.7
 
 await Run(async (ct) =>
 {

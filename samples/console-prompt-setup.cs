@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.6
+#:sdk Cadenza@1.0.7
 
 // Interactive project bootstrapper. Demonstrates each Prompt.* helper.
 // In CI / non-interactive shells, set CADENZA_PROMPT_<QUESTION_KEY> to

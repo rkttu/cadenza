@@ -1,5 +1,7 @@
 # Cadenza.Mcp
 
+> Read this in [한국어](README.ko.md).
+
 `Cadenza.Mcp` is the MCP-server variant of the Cadenza SDK family — a single-file scripting MSBuild SDK that wraps the official [`ModelContextProtocol`](https://github.com/modelcontextprotocol/csharp-sdk) C# SDK (maintained jointly by Anthropic and Microsoft).
 
 ## Quick start
@@ -8,7 +10,7 @@ Create a `server.cs` file:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.5
+#:sdk Cadenza.Mcp@1.0.7
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));

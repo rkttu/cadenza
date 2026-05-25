@@ -1,5 +1,7 @@
 # Cadenza
 
+> Read this in [한국어](README.ko.md).
+
 [![CI](https://github.com/rkttu/cadenza/actions/workflows/ci.yml/badge.svg)](https://github.com/rkttu/cadenza/actions/workflows/ci.yml)
 [![Release](https://github.com/rkttu/cadenza/actions/workflows/release.yml/badge.svg)](https://github.com/rkttu/cadenza/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -17,13 +19,13 @@ A single-file scripting SDK family for .NET 10+ file-based apps, distributed as 
 Select a variant by adding a `#:sdk` directive to the first line of your script. **The version must be exact** — MSBuild SDK references do not support wildcards like `1.*`. Replace the version below with the latest from nuget.org:
 
 ```csharp
-#:sdk Cadenza@1.0.6           // console
-#:sdk Cadenza.Worker@1.0.6    // worker
-#:sdk Cadenza.Web@1.0.6       // web
-#:sdk Cadenza.Mcp@1.0.6       // MCP server
+#:sdk Cadenza@1.0.7           // console
+#:sdk Cadenza.Worker@1.0.7    // worker
+#:sdk Cadenza.Web@1.0.7       // web
+#:sdk Cadenza.Mcp@1.0.7       // MCP server
 ```
 
-See [docs/spec.md](docs/spec.md) for the full v0.1 specification and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
+See [docs/spec.md](docs/spec.md) for the full specification (Korean) and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
 
 ## Examples
 
@@ -31,7 +33,7 @@ Console:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.6
+#:sdk Cadenza@1.0.7
 
 foreach (var file in Glob("**/*.md"))
     WriteLine($"{file}: {ReadText(file).Length:N0} bytes");
@@ -41,7 +43,7 @@ Worker:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.6
+#:sdk Cadenza.Worker@1.0.7
 
 await Run(async (ct) =>
 {
@@ -57,7 +59,7 @@ Web:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.6
+#:sdk Cadenza.Web@1.0.7
 
 Get("/", () => "Hello from Cadenza.Web");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -69,7 +71,7 @@ MCP server:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.6
+#:sdk Cadenza.Mcp@1.0.7
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -80,7 +82,7 @@ Tool("list_files", "List files matching a glob pattern",
 await Run();
 ```
 
-More samples under [samples/](samples/) — see the [sample index](samples/README.md) for the full list (console glob/grep, git deploy guard, JSON-typed HTTP fetch, interactive setup, worker with config polling, web CRUD API).
+More samples under [samples/](samples/) — see the [sample index](samples/README.md) for the full list (console glob/grep, git deploy guard, JSON-typed HTTP fetch, interactive setup, worker with config polling, web CRUD API, MCP servers).
 
 ## Repository layout
 
@@ -89,12 +91,14 @@ src/
   core/          # shared modules (namespace: Cadenza)
   worker/        # worker-only modules (namespace: Cadenza.Worker)
   web/           # web-only modules (namespace: Cadenza.Web)
+  mcp/           # MCP-only modules (namespace: Cadenza.Mcp)
 packaging/
   Cadenza/             # console SDK package layout
   Cadenza.Worker/      # worker SDK package layout
   Cadenza.Web/         # web SDK package layout
+  Cadenza.Mcp/         # MCP server SDK package layout
 build/
-  Cadenza.Packaging.proj   # traversal project that packs all three SDKs
+  Cadenza.Packaging.proj   # traversal project that packs all four SDKs
 samples/                   # canonical example scripts
 .github/workflows/         # CI (pack) and release (pack + push to nuget.org)
 ```
@@ -102,27 +106,28 @@ samples/                   # canonical example scripts
 ## Building locally
 
 ```bash
-dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=0.1.0-local
+dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.7-local
 ```
 
-Three `.nupkg` files appear under `./artifacts`. To consume them from a script, add a `nuget.config` next to the script with a `<add key="local" value="…/artifacts" />` source.
+Four `.nupkg` files appear under `./artifacts`. To consume them from a script, add a `nuget.config` next to the script with a `<add key="local" value="…/artifacts" />` source.
 
 ## Publishing
 
 CI/CD is configured in [.github/workflows/](.github/workflows/):
 
-- [ci.yml](.github/workflows/ci.yml) — runs on every push/PR; packs all three SDKs on Linux/macOS/Windows and uploads the Linux artifacts.
+- [ci.yml](.github/workflows/ci.yml) — runs on every push/PR; packs all SDKs on Linux/macOS/Windows and uploads the Linux artifacts.
 - [release.yml](.github/workflows/release.yml) — runs on `v*` tag push or `workflow_dispatch`; packs and pushes to nuget.org using the `NUGET_API_KEY` repository secret, then creates a GitHub release.
 
-To cut a release: push a tag like `v1.0.0`, or trigger `release.yml` manually with a version input.
+To cut a release: push a tag like `v1.0.7`, or trigger `release.yml` manually with a version input.
 
 ## Troubleshooting
 
 Common issues and workarounds are collected in [docs/troubleshooting.md](docs/troubleshooting.md). Quick links:
 
-- [`#:sdk Cadenza@1.*` (wildcard) gives "no version specified"](docs/troubleshooting.md#sdk-cadenza1-wildcard--floating-버전-사용-시-버전이-지정되지-않음-오류) — MSBuild SDK refs require exact versions, unlike `PackageReference`
-- [Newly-released SDK version not picked up (stale NuGet cache)](docs/troubleshooting.md#새로-게시된-버전이-인식되지-않음-stale-nuget-cache) — clear only Cadenza-related cache entries
-- [`MSB3552: **/*.resx not found` on macOS](docs/troubleshooting.md#macos에서-error-msb3552-리소스-파일-resx을를-찾을-수-없습니다) — fixed in 1.0.1
+- [`#:sdk Cadenza@1.*` (wildcard) gives "no version specified"](docs/troubleshooting.md#sdk-cadenza1-wildcard--floating-version-errors-with-no-version-specified) — MSBuild SDK refs require exact versions, unlike `PackageReference`
+- [Newly-released SDK version not picked up (stale NuGet cache)](docs/troubleshooting.md#newly-released-version-not-picked-up-stale-nuget-cache) — clear only Cadenza-related cache entries
+- [`MSB3552: **/*.resx not found` on macOS](docs/troubleshooting.md#macos-error-msb3552-resource-file-resx-could-not-be-found) — fixed in 1.0.1
+- [CJK / emoji garbled in `Capture(...)` output on Windows](docs/troubleshooting.md#capture-output-cjk--emoji-garbled-on-windows) — fixed in 1.0.4
 
 ## License
 
