@@ -99,6 +99,13 @@ CI/CD is configured in [.github/workflows/](.github/workflows/):
 
 To cut a release: push a tag like `v1.0.0`, or trigger `release.yml` manually with a version input.
 
+## Troubleshooting
+
+Common issues and workarounds are collected in [docs/troubleshooting.md](docs/troubleshooting.md). Quick links:
+
+- [Newly-released SDK version not picked up (stale NuGet cache)](docs/troubleshooting.md#cadenza-캐시만-선택적으로-비우기) — how to clear only the Cadenza-related cache entries
+- [`MSB3552: **/*.resx not found` on macOS](docs/troubleshooting.md#macos에서-error-msb3552-리소스-파일-resx을를-찾을-수-없습니다) — fixed in 1.0.1
+
 ## License
 
 [MIT](LICENSE) — © Cadenza contributors.
