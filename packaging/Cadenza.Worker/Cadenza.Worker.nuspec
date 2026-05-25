@@ -6,7 +6,7 @@
     <title>Cadenza.Worker SDK</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
-    <description>Single-file scripting SDK for .NET 10+ worker / daemon scripts. Use with `#:sdk Cadenza.Worker@1.*` in file-based apps.</description>
+    <description>Single-file scripting SDK for .NET 10+ worker / daemon scripts. Use with `#:sdk Cadenza.Worker@1.0.1` in file-based apps (replace with latest version — MSBuild SDK refs require exact versions).</description>
     <summary>MSBuild SDK for .NET 10 file-based worker scripts.</summary>
     <projectUrl>$projectUrl$</projectUrl>
     <repository type="git" url="$repositoryUrl$" commit="$commit$" />

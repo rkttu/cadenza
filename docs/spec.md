@@ -30,10 +30,12 @@
 사용자는 스크립트 첫 줄로 변종을 선택:
 
 ```csharp
-#:sdk Cadenza@1.*           // 콘솔
-#:sdk Cadenza.Worker@1.*    // 워커
-#:sdk Cadenza.Web@1.*       // 웹
+#:sdk Cadenza@1.0.1           // 콘솔
+#:sdk Cadenza.Worker@1.0.1    // 워커
+#:sdk Cadenza.Web@1.0.1       // 웹
 ```
+
+> **버전은 정확한 SemVer만 허용된다.** MSBuild SDK reference resolver는 `1.*` 같은 floating 버전을 지원하지 않으며, wildcard 사용 시 "버전이 지정되지 않음" 오류로 떨어진다. 새 릴리스가 나오면 `#:sdk` 줄의 버전 문자열을 직접 갱신해야 한다 (자세한 내용 §11.4 참조).
 
 ### 1.2 Naming Rationale
 
@@ -383,7 +385,7 @@ void Web.UseCors(string policy = "default");
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.*
+#:sdk Cadenza@1.0.1
 
 foreach (var file in Glob("**/*.md"))
 {
@@ -396,7 +398,7 @@ foreach (var file in Glob("**/*.md"))
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.*
+#:sdk Cadenza@1.0.1
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main")
@@ -417,7 +419,7 @@ Run("dotnet publish -c Release -o ./dist");
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.*
+#:sdk Cadenza.Worker@1.0.1
 
 await Run(async (ct) =>
 {
@@ -433,7 +435,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.*
+#:sdk Cadenza.Worker@1.0.1
 
 var endpoint = Worker.Config<string>("Api:Endpoint")
     ?? throw new InvalidOperationException("Api:Endpoint missing");
@@ -453,7 +455,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.*
+#:sdk Cadenza.Web@1.0.1
 
 Get("/", () => "Hello from Cadenza.Web");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -471,7 +473,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.*
+#:sdk Cadenza.Web@1.0.1
 
 Web.App.UseStaticFiles();          // 고급 옵션은 Web.App로 접근
 Get("/api/files", () => Glob("wwwroot/**/*.html").Select(Path.GetFileName));
@@ -612,8 +614,36 @@ dotnet publish app.cs -r linux-x64 -c Release
 
 ### 11.3 게시
 
-- 초기 NuGet 게시: `0.1.0-preview.1`.
-- 버전 라이프사이클: 0.x.x-preview (실험), 0.x.x (안정화), 1.0.0 (tier 1 동결).
+- 초기 NuGet 게시: `0.1.0-preview.1` (deprecated; v1.0.0 직진 채택).
+- 실제 v1.0.0 / v1.0.1 게시 완료. v1.* 의 tier 1 멤버는 동결 상태.
+- 향후 비호환 변경은 v2.0.0 메이저 격상에서만.
+
+### 11.4 사용자 측 버전 핀 정책
+
+`<Project Sdk="...">` 어트리뷰트와 `#:sdk` 디렉티브의 버전 필드는 **정확한 SemVer만 허용된다.** MSBuild SDK reference resolver(NuGet 기반)는 PackageReference와 달리 floating 패턴(`1.*`, `1.0.*`)을 평가하지 않는다 — 평가 단계가 restore 이전에 있기 때문.
+
+따라서 권장 패턴은 다음 둘 중 하나:
+
+```csharp
+// 패턴 A: 스크립트에 정확한 버전 핀
+#:sdk Cadenza@1.0.1
+```
+
+```json
+// 패턴 B: 스크립트와 같은 디렉터리의 global.json에 중앙화
+{
+  "msbuild-sdks": {
+    "Cadenza": "1.0.1"
+  }
+}
+```
+
+```csharp
+// 그리고 스크립트는 버전 생략
+#:sdk Cadenza
+```
+
+새 릴리스로 이동하려면 위 두 위치 중 어느 쪽이든 버전 문자열을 직접 갱신한다. "항상 최신"을 자동화하고 싶다면 CI에서 sed/jq로 버전을 일괄 치환하는 방식이 현실적 차선책.
 
 ---
 
@@ -621,10 +651,10 @@ dotnet publish app.cs -r linux-x64 -c Release
 
 1. **nuget.org에서 `Cadenza` 패키지 ID 가용성 확인.** 결과에 따라 §10.1 차순위 적용.
 2. **GitHub org `cadenza-sdks` 생성 + 도메인 확보 (`cadenza.dev` 또는 차순위).**
-3. **최소 SDK 빌드 + `#:sdk` 동작 검증.** 빈 `Cadenza` SDK 패키지를 만들고, `#:sdk Cadenza@0.1.0-preview.1`로 `WriteLine("hi")`가 동작하는지 확인. SDK 가족 모델의 단일 핵심 가설.
+3. **최소 SDK 빌드 + `#:sdk` 동작 검증.** 빈 `Cadenza` SDK 패키지를 만들고, `#:sdk Cadenza@1.0.1`로 `WriteLine("hi")`가 동작하는지 확인. SDK 가족 모델의 단일 핵심 가설.
 4. **Default deployment 설정 검증.** `dotnet publish app.cs -r linux-x64`가 SDK 기본값으로 R2R+SingleFile+SCD 산출물을 만드는지 확인. AOT off가 base SDK의 true를 정상 override하는지 명시적 확인.
 5. **`Cadenza.Web` 추가.** 기반 SDK가 `Microsoft.NET.Sdk.Web`인 변종이 의도대로 동작하는지 확인.
 6. **`Cadenza.Worker` 추가.** 호스트 라이프사이클이 `Worker.Run` 추상화 안에서 정상 동작하는지 확인.
 7. **Tier 1 모듈 풀세트 구현 + canonical examples 작성.**
 8. **NativeAOT opt-in 검증.** `#:property PublishAot=true` 추가 시 정상 격상되는지, Cadenza API가 AOT 모드에서 경고 없이 동작하는지 확인.
-9. **README 3종 + "Publishing as a single binary" 가이드 동결, `0.1.0-preview.1` 푸시.**
+9. **README 3종 + "Publishing as a single binary" 가이드 동결, `1.0.0` / `1.0.1` 푸시 완료.**

@@ -6,7 +6,7 @@
     <title>Cadenza.Web SDK</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
-    <description>Single-file scripting SDK for .NET 10+ web / Minimal API scripts. Use with `#:sdk Cadenza.Web@1.*` in file-based apps.</description>
+    <description>Single-file scripting SDK for .NET 10+ web / Minimal API scripts. Use with `#:sdk Cadenza.Web@1.0.1` in file-based apps (replace with latest version — MSBuild SDK refs require exact versions).</description>
     <summary>MSBuild SDK for .NET 10 file-based web scripts.</summary>
     <projectUrl>$projectUrl$</projectUrl>
     <repository type="git" url="$repositoryUrl$" commit="$commit$" />

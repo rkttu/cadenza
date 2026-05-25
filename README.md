@@ -13,12 +13,12 @@ A single-file scripting SDK family for .NET 10+ file-based apps, distributed as 
 | `Cadenza.Worker` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Worker.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Worker) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Worker.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Worker) | Background services, daemons |
 | `Cadenza.Web` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Web.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Web) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Web.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Web) | Web APIs, Minimal API scripts |
 
-Select a variant by adding a `#:sdk` directive to the first line of your script:
+Select a variant by adding a `#:sdk` directive to the first line of your script. **The version must be exact** — MSBuild SDK references do not support wildcards like `1.*`. Replace the version below with the latest from nuget.org:
 
 ```csharp
-#:sdk Cadenza@1.*           // console
-#:sdk Cadenza.Worker@1.*    // worker
-#:sdk Cadenza.Web@1.*       // web
+#:sdk Cadenza@1.0.1           // console
+#:sdk Cadenza.Worker@1.0.1    // worker
+#:sdk Cadenza.Web@1.0.1       // web
 ```
 
 See [docs/spec.md](docs/spec.md) for the full v0.1 specification and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
@@ -29,7 +29,7 @@ Console:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.*
+#:sdk Cadenza@1.0.1
 
 foreach (var file in Glob("**/*.md"))
     WriteLine($"{file}: {ReadText(file).Length:N0} bytes");
@@ -39,7 +39,7 @@ Worker:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.*
+#:sdk Cadenza.Worker@1.0.1
 
 await Run(async (ct) =>
 {
@@ -55,7 +55,7 @@ Web:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.*
+#:sdk Cadenza.Web@1.0.1
 
 Get("/", () => "Hello from Cadenza.Web");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -103,7 +103,8 @@ To cut a release: push a tag like `v1.0.0`, or trigger `release.yml` manually wi
 
 Common issues and workarounds are collected in [docs/troubleshooting.md](docs/troubleshooting.md). Quick links:
 
-- [Newly-released SDK version not picked up (stale NuGet cache)](docs/troubleshooting.md#cadenza-캐시만-선택적으로-비우기) — how to clear only the Cadenza-related cache entries
+- [`#:sdk Cadenza@1.*` (wildcard) gives "no version specified"](docs/troubleshooting.md#sdk-cadenza1-wildcard--floating-버전-사용-시-버전이-지정되지-않음-오류) — MSBuild SDK refs require exact versions, unlike `PackageReference`
+- [Newly-released SDK version not picked up (stale NuGet cache)](docs/troubleshooting.md#새로-게시된-버전이-인식되지-않음-stale-nuget-cache) — clear only Cadenza-related cache entries
 - [`MSB3552: **/*.resx not found` on macOS](docs/troubleshooting.md#macos에서-error-msb3552-리소스-파일-resx을를-찾을-수-없습니다) — fixed in 1.0.1
 
 ## License

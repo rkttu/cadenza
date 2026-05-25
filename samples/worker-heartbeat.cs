@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.*
+#:sdk Cadenza.Worker@1.0.1
 
 await Run(async (ct) =>
 {

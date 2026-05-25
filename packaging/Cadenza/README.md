@@ -8,7 +8,7 @@ Create a `hello.cs` file:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.*
+#:sdk Cadenza@1.0.1
 
 foreach (var file in Glob("**/*.md"))
 {
