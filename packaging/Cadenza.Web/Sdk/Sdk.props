@@ -13,6 +13,18 @@
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
 
+  <!-- 2b) File-based program defaults.
+       The synthetic project's MSBuildProjectDirectory equals the directory
+       holding the user's .cs file. If that directory has many sibling files
+       (e.g. the user runs a script from their home folder), the SDK's default
+       `**/*.cs`, `**/*` and `**/*.resx` globs walk the entire tree and add
+       30-60+ seconds to evaluation. Disable default items entirely for
+       file-based programs — we inject the Cadenza source files explicitly,
+       and the entry point file gets added back below. -->
+  <PropertyGroup Condition=" '$(FileBasedProgram)' == 'true' ">
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+
   <!-- 3) Cadenza source files + global usings (forward slashes for cross-platform globbing) -->
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)../content/core/**/*.cs" />
@@ -24,6 +36,11 @@
     <Using Include="Cadenza.Fs" Static="true" />
     <Using Include="Cadenza.Web.Web" Static="true" />
     <Using Include="System.Console" Static="true" />
+  </ItemGroup>
+
+  <!-- 3b) Re-add the file-based program entry point since we disabled defaults. -->
+  <ItemGroup Condition=" '$(FileBasedProgram)' == 'true' And '$(EntryPointFilePath)' != '' ">
+    <Compile Include="$(EntryPointFilePath)" />
   </ItemGroup>
 
   <!-- 4) Default deployment settings.
