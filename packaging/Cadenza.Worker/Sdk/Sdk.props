@@ -31,12 +31,23 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
   </ItemGroup>
 
-  <!-- 4) Default deployment settings (publish-time only) -->
+  <!-- 4) Default deployment settings.
+       `Publish*` properties take effect only during `dotnet publish`,
+       so they do not slow down `dotnet run` iteration.
+
+       `PublishAot` is set unconditionally to false to override the
+       file-based-program default (which is `true` in .NET 10), matching
+       the spec's "AOT is opt-in" stance (§3.4). Users opt in by adding
+       `#:property PublishAot=true` to their script — that property is
+       evaluated AFTER our Sdk.props in the synthetic csproj, so it wins.
+
+       `SelfContained` is intentionally NOT set: on .NET 8+,
+       `dotnet publish -r <rid>` defaults it to true, while leaving it
+       unset keeps `dotnet run` framework-dependent and fast. -->
   <PropertyGroup>
-    <PublishAot Condition=" '$(PublishAot)' == '' ">false</PublishAot>
+    <PublishAot>false</PublishAot>
     <PublishSingleFile Condition=" '$(PublishSingleFile)' == '' ">true</PublishSingleFile>
     <PublishReadyToRun Condition=" '$(PublishReadyToRun)' == '' ">true</PublishReadyToRun>
-    <SelfContained Condition=" '$(SelfContained)' == '' ">true</SelfContained>
     <EnableCompressionInSingleFile Condition=" '$(EnableCompressionInSingleFile)' == '' ">true</EnableCompressionInSingleFile>
     <IncludeNativeLibrariesForSelfExtract Condition=" '$(IncludeNativeLibrariesForSelfExtract)' == '' ">false</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
