@@ -1,12 +1,17 @@
 # Cadenza
 
+[![CI](https://github.com/rkttu/cadenza/actions/workflows/ci.yml/badge.svg)](https://github.com/rkttu/cadenza/actions/workflows/ci.yml)
+[![Release](https://github.com/rkttu/cadenza/actions/workflows/release.yml/badge.svg)](https://github.com/rkttu/cadenza/actions/workflows/release.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0%2B-512BD4.svg?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+
 A single-file scripting SDK family for .NET 10+ file-based apps, distributed as three MSBuild SDK packages:
 
-| SDK | NuGet ID | Use case |
+| SDK | Package | Use case |
 | --- | --- | --- |
-| `Cadenza` | [Cadenza](https://www.nuget.org/packages/Cadenza) | Console scripts, CLI utilities |
-| `Cadenza.Worker` | [Cadenza.Worker](https://www.nuget.org/packages/Cadenza.Worker) | Background services, daemons |
-| `Cadenza.Web` | [Cadenza.Web](https://www.nuget.org/packages/Cadenza.Web) | Web APIs, Minimal API scripts |
+| `Cadenza` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.svg?label=nuget)](https://www.nuget.org/packages/Cadenza) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.svg?label=downloads)](https://www.nuget.org/packages/Cadenza) | Console scripts, CLI utilities |
+| `Cadenza.Worker` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Worker.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Worker) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Worker.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Worker) | Background services, daemons |
+| `Cadenza.Web` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Web.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Web) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Web.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Web) | Web APIs, Minimal API scripts |
 
 Select a variant by adding a `#:sdk` directive to the first line of your script:
 
@@ -96,4 +101,4 @@ To cut a release: push a tag like `v0.1.0-preview.1`, or trigger `release.yml` m
 
 ## License
 
-MIT.
+[MIT](LICENSE) — © Cadenza contributors.
