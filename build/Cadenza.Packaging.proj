@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.Build.Traversal/4.1.0">
+  <ItemGroup>
+    <ProjectReference Include="..\packaging\Cadenza\Cadenza.proj" />
+    <ProjectReference Include="..\packaging\Cadenza.Worker\Cadenza.Worker.proj" />
+    <ProjectReference Include="..\packaging\Cadenza.Web\Cadenza.Web.proj" />
+  </ItemGroup>
+</Project>

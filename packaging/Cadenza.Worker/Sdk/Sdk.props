@@ -1,0 +1,40 @@
+<Project>
+  <!-- 1) Import base SDK first -->
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk.Worker" />
+
+  <!-- 2) Cadenza compile settings -->
+  <PropertyGroup>
+    <TargetFramework Condition=" '$(TargetFramework)' == '' ">net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <!-- 3) Cadenza source files + global usings -->
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)..\content\core\**\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\content\worker\**\*.cs" />
+
+    <Using Include="Cadenza" />
+    <Using Include="Cadenza.Worker" />
+    <Using Include="Cadenza.Sh" Static="true" />
+    <Using Include="Cadenza.Fs" Static="true" />
+    <Using Include="Cadenza.Worker.Worker" Static="true" />
+    <Using Include="System.Console" Static="true" />
+  </ItemGroup>
+
+  <!-- 3b) Hosting package — Microsoft.NET.Sdk.Worker does not bundle it. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- 4) Default deployment settings (publish-time only) -->
+  <PropertyGroup>
+    <PublishAot Condition=" '$(PublishAot)' == '' ">false</PublishAot>
+    <PublishSingleFile Condition=" '$(PublishSingleFile)' == '' ">true</PublishSingleFile>
+    <PublishReadyToRun Condition=" '$(PublishReadyToRun)' == '' ">true</PublishReadyToRun>
+    <SelfContained Condition=" '$(SelfContained)' == '' ">true</SelfContained>
+    <EnableCompressionInSingleFile Condition=" '$(EnableCompressionInSingleFile)' == '' ">true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract Condition=" '$(IncludeNativeLibrariesForSelfExtract)' == '' ">false</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+</Project>

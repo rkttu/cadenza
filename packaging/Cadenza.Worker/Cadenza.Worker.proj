@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NoWarn>$(NoWarn);NU5100;NU5128;NU5125</NoWarn>
+
+    <NuspecFile>$(MSBuildThisFileDirectory)Cadenza.Worker.nuspec</NuspecFile>
+    <NuspecBasePath>$(MSBuildThisFileDirectory)</NuspecBasePath>
+    <NuspecProperties>version=$(Version);authors=$(Authors);copyright=$(Copyright);projectUrl=$(PackageProjectUrl);repositoryUrl=$(RepositoryUrl);commit=$(RepositoryCommit)</NuspecProperties>
+  </PropertyGroup>
+</Project>
