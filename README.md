@@ -97,7 +97,7 @@ CI/CD is configured in [.github/workflows/](.github/workflows/):
 - [ci.yml](.github/workflows/ci.yml) — runs on every push/PR; packs all three SDKs on Linux/macOS/Windows and uploads the Linux artifacts.
 - [release.yml](.github/workflows/release.yml) — runs on `v*` tag push or `workflow_dispatch`; packs and pushes to nuget.org using the `NUGET_API_KEY` repository secret, then creates a GitHub release.
 
-To cut a release: push a tag like `v0.1.0-preview.1`, or trigger `release.yml` manually with a version input.
+To cut a release: push a tag like `v1.0.0`, or trigger `release.yml` manually with a version input.
 
 ## License
 
