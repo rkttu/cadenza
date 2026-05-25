@@ -1,0 +1,98 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (e.g. 0.1.0-preview.1)'
+        required: true
+        type: string
+      push:
+        description: 'Push to nuget.org'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  release:
+    name: pack & publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Resolve version
+        id: ver
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ inputs.version }}"
+          else
+            # strip leading 'v'
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          if [[ -z "$VERSION" ]]; then
+            echo "Could not resolve version" >&2
+            exit 1
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: ${VERSION}"
+
+      - name: Pack all SDKs
+        run: |
+          dotnet pack build/Cadenza.Packaging.proj \
+            -c Release \
+            -o ./artifacts \
+            -p:Version="${{ steps.ver.outputs.version }}" \
+            -p:RepositoryCommit="${GITHUB_SHA}"
+
+      - name: List artifacts
+        run: ls -la ./artifacts
+
+      - name: Upload nupkgs
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkgs-${{ steps.ver.outputs.version }}
+          path: ./artifacts/*.nupkg
+          if-no-files-found: error
+
+      - name: Push to nuget.org
+        if: github.event_name == 'push' || inputs.push == true
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [[ -z "${NUGET_API_KEY}" ]]; then
+            echo "NUGET_API_KEY secret is not set; skipping push." >&2
+            exit 1
+          fi
+          dotnet nuget push ./artifacts/*.nupkg \
+            --source https://api.nuget.org/v3/index.json \
+            --api-key "${NUGET_API_KEY}" \
+            --skip-duplicate
+
+      - name: Create GitHub release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.ver.outputs.version }}" \
+            ./artifacts/*.nupkg \
+            --title "Cadenza v${{ steps.ver.outputs.version }}" \
+            --generate-notes
