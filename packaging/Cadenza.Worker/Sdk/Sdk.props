@@ -8,12 +8,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <!-- File-based apps have no `.resx`; suppress the default glob so a stray
+         `**/*.resx` literal cannot reach GenerateResource on non-Windows hosts. -->
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
 
-  <!-- 3) Cadenza source files + global usings -->
+  <!-- 3) Cadenza source files + global usings (forward slashes for cross-platform globbing) -->
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)..\content\core\**\*.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\content\worker\**\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../content/core/**/*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../content/worker/**/*.cs" />
 
     <Using Include="Cadenza" />
     <Using Include="Cadenza.Worker" />
