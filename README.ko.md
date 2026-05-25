@@ -120,6 +120,26 @@ CI/CD는 [.github/workflows/](.github/workflows/)에 구성돼 있습니다:
 
 릴리스 하려면 `v1.0.7` 같은 태그를 push 하거나, `release.yml`을 버전 입력과 함께 수동 실행.
 
+## AI 코딩 에이전트 연동
+
+Cadenza는 주요 AI 코딩 에이전트들이 자동으로 발견하고 정확한 스크립트를
+작성할 수 있도록 어댑터 파일을 함께 배포합니다. canonical 스킬 콘텐츠는
+[`skills/cadenza/SKILL.md`](skills/cadenza/SKILL.md)에 있고, 각 에이전트가
+인식하는 경로에 어댑터가 미리 설치돼 있습니다:
+
+| 에이전트 | 어댑터 경로 |
+| --- | --- |
+| Universal (Cody, OpenAI tools, …) | [`AGENTS.md`](AGENTS.md) |
+| Aider | [`CONVENTIONS.md`](CONVENTIONS.md) |
+| GitHub Copilot | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
+| Cursor | [`.cursor/rules/cadenza.mdc`](.cursor/rules/cadenza.mdc) |
+| Claude Code | [`.claude/skills/cadenza/SKILL.md`](.claude/skills/cadenza/SKILL.md) |
+| Continue | [`.continue/rules/cadenza.md`](.continue/rules/cadenza.md) |
+
+다른 프로젝트에서 Cadenza-aware 보조를 켜고 싶다면 본인이 쓰는 에이전트의
+어댑터를 복사하면 됩니다 — [`skills/README.ko.md`](skills/README.ko.md)에
+한 줄 curl 레시피가 있습니다.
+
 ## 트러블슈팅
 
 자주 발생하는 문제와 우회법은 [docs/troubleshooting.ko.md](docs/troubleshooting.ko.md)에 모았습니다. 바로가기:

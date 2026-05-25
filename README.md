@@ -120,6 +120,26 @@ CI/CD is configured in [.github/workflows/](.github/workflows/):
 
 To cut a release: push a tag like `v1.0.7`, or trigger `release.yml` manually with a version input.
 
+## AI coding agent integration
+
+Cadenza ships with adapter files for the major AI coding agents so they
+discover Cadenza automatically and write idiomatic scripts. The canonical
+skill content lives at [`skills/cadenza/SKILL.md`](skills/cadenza/SKILL.md);
+adapters are pre-installed at the well-known path for each agent:
+
+| Agent | Adapter path |
+| --- | --- |
+| Universal (Cody, OpenAI tools, …) | [`AGENTS.md`](AGENTS.md) |
+| Aider | [`CONVENTIONS.md`](CONVENTIONS.md) |
+| GitHub Copilot | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
+| Cursor | [`.cursor/rules/cadenza.mdc`](.cursor/rules/cadenza.mdc) |
+| Claude Code | [`.claude/skills/cadenza/SKILL.md`](.claude/skills/cadenza/SKILL.md) |
+| Continue | [`.continue/rules/cadenza.md`](.continue/rules/cadenza.md) |
+
+To enable Cadenza-aware assistance in any other project, copy the adapter for
+your agent — see [`skills/README.md`](skills/README.md) for one-liner curl
+recipes.
+
 ## Troubleshooting
 
 Common issues and workarounds are collected in [docs/troubleshooting.md](docs/troubleshooting.md). Quick links:
