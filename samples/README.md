@@ -1,0 +1,48 @@
+# Cadenza Samples
+
+Each `.cs` file is a self-contained file-based program — run it with:
+
+```bash
+dotnet run <file>.cs
+```
+
+Pin the SDK version in the `#:sdk` line of each sample to the latest published
+release (the files in this folder currently pin `Cadenza@1.0.4`,
+`Cadenza.Worker@1.0.4`, `Cadenza.Web@1.0.4`). MSBuild SDK references require
+an exact version — see [docs/troubleshooting.md](../docs/troubleshooting.md)
+for details.
+
+## Console scripts (`#:sdk Cadenza@...`)
+
+| Sample | Demonstrates |
+| --- | --- |
+| [`console-hello.cs`](console-hello.cs) | Minimal — `Glob`, `ReadText`, `WriteLine` |
+| [`console-count-files.cs`](console-count-files.cs) | Recursive `Glob` + LINQ grouping |
+| [`console-deploy-guard.cs`](console-deploy-guard.cs) | `Capture` for git state, `Run` for build steps, `Env.Exit` for failure paths |
+| [`console-http-fetch.cs`](console-http-fetch.cs) | `Http.GetJson` with a source-generated `JsonSerializerContext` (AOT-clean) |
+| [`console-prompt-setup.cs`](console-prompt-setup.cs) | All four `Prompt.*` helpers, with CI fallback envelope |
+
+## Worker scripts (`#:sdk Cadenza.Worker@...`)
+
+| Sample | Demonstrates |
+| --- | --- |
+| [`worker-heartbeat.cs`](worker-heartbeat.cs) | Minimal periodic loop with graceful shutdown |
+| [`worker-polling.cs`](worker-polling.cs) | `Worker.Config<T>` for typed config, periodic HTTP probe, `Log.Info/Warn/Debug` |
+
+## Web scripts (`#:sdk Cadenza.Web@...`)
+
+| Sample | Demonstrates |
+| --- | --- |
+| [`web-minimal.cs`](web-minimal.cs) | Hello + health + echo with Minimal API record binding |
+| [`web-todo-api.cs`](web-todo-api.cs) | Full CRUD over an in-memory store using `Get`/`Post`/`Put`/`Delete` |
+
+## Publishing as a single binary
+
+Any of these samples can be turned into a self-contained binary:
+
+```bash
+dotnet publish console-deploy-guard.cs -r linux-x64 -c Release
+```
+
+See [docs/publishing-single-binary.md](../docs/publishing-single-binary.md)
+for the full distribution matrix (compression, AOT opt-in, container packaging).

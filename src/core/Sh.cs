@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace Cadenza;
 
+/// <summary>
+/// Shell execution helpers. Commands are dispatched through the platform's
+/// default shell (<c>cmd.exe /d /s /c</c> on Windows, <c>/bin/sh -c</c>
+/// elsewhere) so shell metacharacters (<c>|</c>, <c>&amp;&amp;</c>, <c>&gt;</c>)
+/// behave as the user expects.
+/// </summary>
 public static class Sh
 {
     private static readonly Encoding _captureEncoding = ResolveCaptureEncoding();
@@ -34,6 +40,23 @@ public static class Sh
         }
     }
 
+    /// <summary>
+    /// Runs <paramref name="cmd"/> and waits for it to complete, inheriting
+    /// stdout/stderr from the caller's terminal.
+    /// </summary>
+    /// <param name="cmd">Shell command line (interpreted by cmd.exe or /bin/sh).</param>
+    /// <param name="throwOnError">
+    /// When <c>true</c>, throws <see cref="InvalidOperationException"/> if the
+    /// process exits with a non-zero status. Default is <c>false</c> — the
+    /// caller inspects the returned exit code.
+    /// </param>
+    /// <returns>The process exit code.</returns>
+    /// <example>
+    /// <code>
+    /// if (Run("dotnet test") != 0)
+    ///     Env.Exit(1);
+    /// </code>
+    /// </example>
     public static int Run(string cmd, bool throwOnError = false)
     {
         var psi = MakeShell(cmd, captureOutput: false);
@@ -44,6 +67,26 @@ public static class Sh
         return p.ExitCode;
     }
 
+    /// <summary>
+    /// Runs <paramref name="cmd"/> and returns its captured standard output.
+    /// </summary>
+    /// <param name="cmd">Shell command line.</param>
+    /// <returns>The full stdout text produced by the command.</returns>
+    /// <remarks>
+    /// On Windows the output is decoded with the host's OEM code page so CJK
+    /// characters and other non-ASCII text from <c>dir</c>, <c>git</c>, etc.
+    /// round-trip correctly. On Linux/macOS UTF-8 is used.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the process exits with a non-zero status. The exception
+    /// message includes captured stderr to aid diagnosis.
+    /// </exception>
+    /// <example>
+    /// <code>
+    /// var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
+    /// WriteLine($"Branch: {branch}");
+    /// </code>
+    /// </example>
     public static string Capture(string cmd)
     {
         var psi = MakeShell(cmd, captureOutput: true);
@@ -56,6 +99,12 @@ public static class Sh
         return stdout;
     }
 
+    /// <summary>
+    /// Runs <paramref name="cmd"/> with stdout/stderr inherited from the
+    /// caller's terminal. Identical to <see cref="Run(string, bool)"/> with
+    /// <c>throwOnError=false</c>, except the exit code is discarded.
+    /// </summary>
+    /// <param name="cmd">Shell command line.</param>
     public static void Pipe(string cmd)
     {
         var psi = MakeShell(cmd, captureOutput: false);
@@ -63,6 +112,13 @@ public static class Sh
         p.WaitForExit();
     }
 
+    /// <summary>
+    /// Asynchronous version of <see cref="Run(string, bool)"/>; does not
+    /// throw on non-zero exit.
+    /// </summary>
+    /// <param name="cmd">Shell command line.</param>
+    /// <param name="ct">Cancellation token. Cancelling does not kill the child process; it only stops waiting.</param>
+    /// <returns>The process exit code.</returns>
     public static async Task<int> RunAsync(string cmd, CancellationToken ct = default)
     {
         var psi = MakeShell(cmd, captureOutput: false);
@@ -71,6 +127,15 @@ public static class Sh
         return p.ExitCode;
     }
 
+    /// <summary>
+    /// Asynchronous version of <see cref="Capture(string)"/>.
+    /// </summary>
+    /// <param name="cmd">Shell command line.</param>
+    /// <param name="ct">Cancellation token.</param>
+    /// <returns>The full stdout text produced by the command.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the process exits with a non-zero status.
+    /// </exception>
     public static async Task<string> CaptureAsync(string cmd, CancellationToken ct = default)
     {
         var psi = MakeShell(cmd, captureOutput: true);

@@ -63,7 +63,7 @@ Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
 await Run();
 ```
 
-More samples under [samples/](samples/).
+More samples under [samples/](samples/) — see the [sample index](samples/README.md) for the full list (console glob/grep, git deploy guard, JSON-typed HTTP fetch, interactive setup, worker with config polling, web CRUD API).
 
 ## Repository layout
 
