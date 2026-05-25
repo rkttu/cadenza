@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
+    <Version Condition=" '$(Version)' == '' ">0.1.0-preview.1</Version>
+    <PackageProjectUrl Condition=" '$(PackageProjectUrl)' == '' ">https://github.com/rkttu/cadenza</PackageProjectUrl>
+    <RepositoryUrl Condition=" '$(RepositoryUrl)' == '' ">https://github.com/rkttu/cadenza.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>Cadenza contributors</Authors>
+    <Copyright>(c) Cadenza contributors</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition=" '$(GITHUB_ACTIONS)' == 'true' ">true</ContinuousIntegrationBuild>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+</Project>

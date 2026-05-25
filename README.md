@@ -1,2 +1,99 @@
-# cadenza
-A custom MSBuild SDK family for writing console, worker, and web .NET apps as single .cs files.
+# Cadenza
+
+A single-file scripting SDK family for .NET 10+ file-based apps, distributed as three MSBuild SDK packages:
+
+| SDK | NuGet ID | Use case |
+| --- | --- | --- |
+| `Cadenza` | [Cadenza](https://www.nuget.org/packages/Cadenza) | Console scripts, CLI utilities |
+| `Cadenza.Worker` | [Cadenza.Worker](https://www.nuget.org/packages/Cadenza.Worker) | Background services, daemons |
+| `Cadenza.Web` | [Cadenza.Web](https://www.nuget.org/packages/Cadenza.Web) | Web APIs, Minimal API scripts |
+
+Select a variant by adding a `#:sdk` directive to the first line of your script:
+
+```csharp
+#:sdk Cadenza@1.*           // console
+#:sdk Cadenza.Worker@1.*    // worker
+#:sdk Cadenza.Web@1.*       // web
+```
+
+See [docs/spec.md](docs/spec.md) for the full v0.1 specification and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
+
+## Examples
+
+Console:
+
+```csharp
+#!/usr/bin/env dotnet run
+#:sdk Cadenza@1.*
+
+foreach (var file in Glob("**/*.md"))
+    WriteLine($"{file}: {ReadText(file).Length:N0} bytes");
+```
+
+Worker:
+
+```csharp
+#!/usr/bin/env dotnet run
+#:sdk Cadenza.Worker@1.*
+
+await Run(async (ct) =>
+{
+    while (!ct.IsCancellationRequested)
+    {
+        Log.Info($"Heartbeat at {DateTime.UtcNow:O}");
+        await Task.Delay(TimeSpan.FromSeconds(30), ct);
+    }
+});
+```
+
+Web:
+
+```csharp
+#!/usr/bin/env dotnet run
+#:sdk Cadenza.Web@1.*
+
+Get("/", () => "Hello from Cadenza.Web");
+Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
+
+await Run();
+```
+
+More samples under [samples/](samples/).
+
+## Repository layout
+
+```text
+src/
+  core/          # shared modules (namespace: Cadenza)
+  worker/        # worker-only modules (namespace: Cadenza.Worker)
+  web/           # web-only modules (namespace: Cadenza.Web)
+packaging/
+  Cadenza/             # console SDK package layout
+  Cadenza.Worker/      # worker SDK package layout
+  Cadenza.Web/         # web SDK package layout
+build/
+  Cadenza.Packaging.proj   # traversal project that packs all three SDKs
+samples/                   # canonical example scripts
+.github/workflows/         # CI (pack) and release (pack + push to nuget.org)
+```
+
+## Building locally
+
+```bash
+dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=0.1.0-local
+```
+
+Three `.nupkg` files appear under `./artifacts`. To consume them from a script, add a `nuget.config` next to the script with a `<add key="local" value="…/artifacts" />` source.
+
+## Publishing
+
+CI/CD is configured in [.github/workflows/](.github/workflows/):
+
+- [ci.yml](.github/workflows/ci.yml) — runs on every push/PR; packs all three SDKs on Linux/macOS/Windows and uploads the Linux artifacts.
+- [release.yml](.github/workflows/release.yml) — runs on `v*` tag push or `workflow_dispatch`; packs and pushes to nuget.org using the `NUGET_API_KEY` repository secret, then creates a GitHub release.
+
+To cut a release: push a tag like `v0.1.0-preview.1`, or trigger `release.yml` manually with a version input.
+
+## License
+
+MIT.
