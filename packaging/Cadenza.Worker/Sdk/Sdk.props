@@ -11,6 +11,10 @@
     <!-- File-based apps have no `.resx`; suppress the default glob so a stray
          `**/*.resx` literal cannot reach GenerateResource on non-Windows hosts. -->
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <!-- NU1510: System.Text.Encoding.CodePages registers code pages via
+         reflection so the trimmer cannot follow it. It IS needed at runtime
+         for Sh.Capture; silence the spurious "unused dependency" warning. -->
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
   </PropertyGroup>
 
   <!-- 2b) File-based program defaults.
@@ -43,9 +47,11 @@
     <Compile Include="$(EntryPointFilePath)" />
   </ItemGroup>
 
-  <!-- 3c) Hosting package — Microsoft.NET.Sdk.Worker does not bundle it. -->
+  <!-- 3c) Hosting package — Microsoft.NET.Sdk.Worker does not bundle it.
+       Also `System.Text.Encoding.CodePages` for Sh.Capture's OEM decoding. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
   </ItemGroup>
 
   <!-- 4) Default deployment settings.

@@ -11,6 +11,10 @@
     <!-- File-based apps have no `.resx`; suppress the default glob so a stray
          `**/*.resx` literal cannot reach GenerateResource on non-Windows hosts. -->
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <!-- NU1510: System.Text.Encoding.CodePages registers code pages via
+         reflection so the trimmer cannot follow it. It IS needed at runtime
+         for Sh.Capture; silence the spurious "unused dependency" warning. -->
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
   </PropertyGroup>
 
   <!-- 2b) File-based program defaults.
@@ -38,6 +42,14 @@
   <!-- 3b) Re-add the file-based program entry point since we disabled defaults. -->
   <ItemGroup Condition=" '$(FileBasedProgram)' == 'true' And '$(EntryPointFilePath)' != '' ">
     <Compile Include="$(EntryPointFilePath)" />
+  </ItemGroup>
+
+  <!-- 3c) `System.Text.Encoding.CodePages` is needed at runtime so `Sh.Capture`
+       can decode cmd.exe's OEM output (e.g., CP949 on Korean Windows). Without
+       this package only UTF-8/UTF-16/ASCII/Latin-1 are available and CJK gets
+       garbled. ~600 KB; harmless on Linux/macOS where it's never invoked. -->
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
   </ItemGroup>
 
   <!-- 4) Default deployment settings.

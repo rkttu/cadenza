@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +10,30 @@ namespace Cadenza;
 
 public static class Sh
 {
+    private static readonly Encoding _captureEncoding = ResolveCaptureEncoding();
+
+    private static Encoding ResolveCaptureEncoding()
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return Encoding.UTF8;
+
+        // On Windows, cmd.exe writes its translated UI strings (e.g., date
+        // labels, drive labels) in the OEM code page set at process start,
+        // regardless of any later `chcp` change. Read with the same OEM page
+        // so CJK and other non-ASCII characters round-trip through Capture.
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        try
+        {
+            var oemCp = CultureInfo.CurrentCulture.TextInfo.OEMCodePage;
+            if (oemCp == 0) oemCp = 437;
+            return Encoding.GetEncoding(oemCp);
+        }
+        catch
+        {
+            return Encoding.UTF8;
+        }
+    }
+
     public static int Run(string cmd, bool throwOnError = false)
     {
         var psi = MakeShell(cmd, captureOutput: false);
@@ -84,8 +110,17 @@ public static class Sh
             psi.ArgumentList.Add(cmd);
         }
 
-        psi.RedirectStandardOutput = captureOutput;
-        psi.RedirectStandardError = captureOutput;
+        if (captureOutput)
+        {
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            // Decode with the encoding the child actually writes:
+            //  - Windows: the OEM code page cmd.exe uses for its translated
+            //    UI strings (CP949 on Korean Windows, CP932 on Japanese, etc.)
+            //  - POSIX: UTF-8 (modern locale default)
+            psi.StandardOutputEncoding = _captureEncoding;
+            psi.StandardErrorEncoding = _captureEncoding;
+        }
         return psi;
     }
 }
