@@ -7,8 +7,8 @@ dotnet run <file>.cs
 ```
 
 Pin the SDK version in the `#:sdk` line of each sample to the latest published
-release (the files in this folder currently pin `Cadenza@1.0.4`,
-`Cadenza.Worker@1.0.4`, `Cadenza.Web@1.0.4`). MSBuild SDK references require
+release (the files in this folder currently pin `Cadenza@1.0.6`,
+`Cadenza.Worker@1.0.6`, `Cadenza.Web@1.0.6`). MSBuild SDK references require
 an exact version — see [docs/troubleshooting.md](../docs/troubleshooting.md)
 for details.
 
@@ -35,6 +35,31 @@ for details.
 | --- | --- |
 | [`web-minimal.cs`](web-minimal.cs) | Hello + health + echo with Minimal API record binding |
 | [`web-todo-api.cs`](web-todo-api.cs) | Full CRUD over an in-memory store using `Get`/`Post`/`Put`/`Delete` |
+
+## MCP server scripts (`#:sdk Cadenza.Mcp@...`)
+
+| Sample | Demonstrates |
+| --- | --- |
+| [`mcp-files.cs`](mcp-files.cs) | Minimal MCP server — `Tool` registration + `Run` for stdio transport |
+| [`mcp-extended.cs`](mcp-extended.cs) | Full primitive set — `Tool` (external API), `Resource` (fixed URI), `Prompt` (template), `Log.Info` (stderr) |
+
+Register a Cadenza.Mcp server with Claude Desktop by adding to its config:
+
+```json
+{
+  "mcpServers": {
+    "cadenza-files": {
+      "command": "dotnet",
+      "args": ["run", "/absolute/path/to/mcp-files.cs"]
+    }
+  }
+}
+```
+
+**Important**: Cadenza.Mcp intentionally does not expose `WriteLine` / `Write` /
+`ReadLine` as Tier 1 bare names. Stdio MCP servers carry JSON-RPC over stdout;
+any stray text breaks the client connection. Use `Log.*` for diagnostics —
+they route through `ILogger` to stderr.
 
 ## Publishing as a single binary
 

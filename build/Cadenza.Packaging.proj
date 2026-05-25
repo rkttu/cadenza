@@ -3,5 +3,6 @@
     <ProjectReference Include="..\packaging\Cadenza\Cadenza.proj" />
     <ProjectReference Include="..\packaging\Cadenza.Worker\Cadenza.Worker.proj" />
     <ProjectReference Include="..\packaging\Cadenza.Web\Cadenza.Web.proj" />
+    <ProjectReference Include="..\packaging\Cadenza.Mcp\Cadenza.Mcp.proj" />
   </ItemGroup>
 </Project>

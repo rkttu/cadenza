@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.4
+#:sdk Cadenza.Web@1.0.6
 
 using System.Collections.Concurrent;
 

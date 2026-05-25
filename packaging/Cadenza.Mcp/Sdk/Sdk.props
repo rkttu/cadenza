@@ -1,0 +1,66 @@
+<Project>
+  <!-- 1) Import base SDK first -->
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <!-- 2) Cadenza compile settings -->
+  <PropertyGroup>
+    <TargetFramework Condition=" '$(TargetFramework)' == '' ">net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <OutputType Condition=" '$(OutputType)' == '' ">Exe</OutputType>
+    <!-- File-based apps have no `.resx`; suppress the default glob so a stray
+         `**/*.resx` literal cannot reach GenerateResource on non-Windows hosts. -->
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <!-- NU1510: System.Text.Encoding.CodePages registers code pages via
+         reflection so the trimmer cannot follow it. It IS needed at runtime
+         for Sh.Capture; silence the spurious "unused dependency" warning. -->
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
+  </PropertyGroup>
+
+  <!-- 2b) File-based program defaults — see Cadenza/Sdk/Sdk.props for rationale. -->
+  <PropertyGroup Condition=" '$(FileBasedProgram)' == 'true' ">
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+
+  <!-- 3) Cadenza source files + global usings.
+       NOTE: System.Console is intentionally NOT brought in as a global static
+       using — the stdio MCP transport owns stdout and a stray `WriteLine`
+       from user code would corrupt the JSON-RPC stream. Use `Log.*` for
+       diagnostics (routed to stderr). -->
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)../content/core/**/*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../content/mcp/**/*.cs" />
+
+    <Using Include="Cadenza" />
+    <Using Include="Cadenza.Mcp" />
+    <Using Include="Cadenza.Sh" Static="true" />
+    <Using Include="Cadenza.Fs" Static="true" />
+    <Using Include="Cadenza.Mcp.Mcp" Static="true" />
+    <Using Include="Cadenza.Mcp.Log" Static="true" />
+  </ItemGroup>
+
+  <!-- 3b) Re-add the file-based program entry point since we disabled defaults. -->
+  <ItemGroup Condition=" '$(FileBasedProgram)' == 'true' And '$(EntryPointFilePath)' != '' ">
+    <Compile Include="$(EntryPointFilePath)" />
+  </ItemGroup>
+
+  <!-- 3c) Required runtime packages:
+         - ModelContextProtocol: Anthropic+Microsoft official MCP C# SDK
+         - Microsoft.Extensions.Hosting: needed for Host.CreateApplicationBuilder
+         - System.Text.Encoding.CodePages: for Sh.Capture's OEM decoding on Windows -->
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="1.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- 4) Default deployment settings — same policy as the rest of the Cadenza family. -->
+  <PropertyGroup>
+    <PublishAot>false</PublishAot>
+    <PublishSingleFile Condition=" '$(PublishSingleFile)' == '' ">true</PublishSingleFile>
+    <PublishReadyToRun Condition=" '$(PublishReadyToRun)' == '' ">true</PublishReadyToRun>
+    <EnableCompressionInSingleFile Condition=" '$(EnableCompressionInSingleFile)' == '' ">true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract Condition=" '$(IncludeNativeLibrariesForSelfExtract)' == '' ">false</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+</Project>
