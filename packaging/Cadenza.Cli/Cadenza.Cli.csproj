@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Cadenza.Cli</RootNamespace>
+    <AssemblyName>cadenza</AssemblyName>
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>cadenza</ToolCommandName>
+    <PackageId>Cadenza.Cli</PackageId>
+    <Title>Cadenza CLI</Title>
+    <Description>Optional accessory CLI for the Cadenza single-file scripting SDK family. Adds `cadenza new &lt;variant&gt;` scaffolding shortcuts and `cadenza run app.cs` which resolves `Cadenza@latest` / version-less `#:sdk` pins by querying nuget.org. The canonical workflow remains `dotnet run app.cs` with an exact version pinned in the script — this CLI is not required.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>cadenza cli scripting dotnet-tool file-based-apps</PackageTags>
+    <PackageProjectUrl>https://github.com/rkttu/cadenza</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/rkttu/cadenza.git</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Tool packages don't need PublishAot / SingleFile from the parent Directory.Build.props -->
+    <PublishAot>false</PublishAot>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <SelfContained>false</SelfContained>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="README.ko.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!--
+    Bundle the SDK resolver so `cadenza install-resolver` can copy it out to
+    the user's resolver path. We reference the project so it builds, but mark
+    ReferenceOutputAssembly=false so the CLI doesn't load it as a runtime
+    dep — it's just a payload file that lives alongside cadenza.dll.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\Cadenza.SdkResolver\Cadenza.SdkResolver.csproj"
+                      ReferenceOutputAssembly="false"
+                      Private="false"
+                      SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+
+  <!--
+    After the resolver builds, copy its outputs into a cadenza-resolver/
+    subfolder of the CLI's output. dotnet pack -t Tool then publishes the
+    entire output to tools/$(TargetFramework)/any/ in the nupkg, including
+    that subfolder.
+  -->
+  <ItemGroup>
+    <Content Include="..\Cadenza.SdkResolver\bin\$(Configuration)\net10.0\Cadenza.SdkResolver.dll"
+             Link="cadenza-resolver\Cadenza.SdkResolver.dll"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="PreserveNewest"
+             Pack="false"
+             Visible="false" />
+    <Content Include="..\Cadenza.SdkResolver\Cadenza.SdkResolver.xml"
+             Link="cadenza-resolver\Cadenza.SdkResolver.xml"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="PreserveNewest"
+             Pack="false"
+             Visible="false" />
+  </ItemGroup>
+
+</Project>

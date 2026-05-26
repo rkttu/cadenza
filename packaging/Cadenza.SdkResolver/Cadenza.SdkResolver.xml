@@ -1,0 +1,10 @@
+<!--
+  MSBuild SDK resolver manifest for Cadenza.SdkResolver.
+  See: https://learn.microsoft.com/visualstudio/msbuild/how-to-use-project-sdk
+
+  Path is relative to this manifest file. The resolver is dropped into the
+  MSBuild SdkResolvers search path by `cadenza install-resolver`.
+-->
+<SdkResolver>
+  <Path>Cadenza.SdkResolver.dll</Path>
+</SdkResolver>
