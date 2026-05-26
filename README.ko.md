@@ -21,10 +21,10 @@
 스크립트 첫 줄에 `#:sdk` 디렉티브를 두어 변종을 선택합니다. **버전은 정확히 적어야 합니다** — MSBuild SDK 참조는 `1.*` 같은 wildcard를 지원하지 않습니다. 아래 버전은 nuget.org의 최신 버전으로 교체하세요:
 
 ```csharp
-#:sdk Cadenza@1.0.9           // 콘솔
-#:sdk Cadenza.Worker@1.0.9    // 워커
-#:sdk Cadenza.Web@1.0.9       // 웹
-#:sdk Cadenza.Mcp@1.0.9       // MCP 서버
+#:sdk Cadenza@1.0.11           // 콘솔
+#:sdk Cadenza.Worker@1.0.11    // 워커
+#:sdk Cadenza.Web@1.0.11       // 웹
+#:sdk Cadenza.Mcp@1.0.11       // MCP 서버
 ```
 
 전체 명세는 [docs/spec.md](docs/spec.md) (한국어), 배포 가이드는 [docs/publishing-single-binary.ko.md](docs/publishing-single-binary.ko.md) 참고.
@@ -35,7 +35,7 @@
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.9
+#:sdk Cadenza@1.0.11
 
 foreach (var file in Glob("**/*.md"))
     WriteLine($"{file}: {ReadText(file).Length:N0} bytes");
@@ -45,7 +45,7 @@ foreach (var file in Glob("**/*.md"))
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.9
+#:sdk Cadenza.Worker@1.0.11
 
 await Run(async (ct) =>
 {
@@ -61,7 +61,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.9
+#:sdk Cadenza.Web@1.0.11
 
 Get("/", () => "Hello from Cadenza.Web");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -73,7 +73,7 @@ MCP 서버:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.9
+#:sdk Cadenza.Mcp@1.0.11
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -122,7 +122,7 @@ samples/                   # canonical 예제 스크립트
 ## 로컬 빌드
 
 ```bash
-dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.9-local
+dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.11-local
 ```
 
 `./artifacts` 아래에 4개의 `.nupkg`가 생성됩니다. 스크립트에서 소비하려면 옆에 `nuget.config`를 두고 `<add key="local" value="…/artifacts" />` 소스를 추가합니다.

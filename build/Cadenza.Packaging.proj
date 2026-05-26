@@ -5,6 +5,6 @@
     <ProjectReference Include="..\packaging\Cadenza.Web\Cadenza.Web.proj" />
     <ProjectReference Include="..\packaging\Cadenza.Mcp\Cadenza.Mcp.proj" />
     <ProjectReference Include="..\packaging\Cadenza.Templates\Cadenza.Templates.proj" />
-    <ProjectReference Include="..\packaging\Cadenza.Cli\Cadenza.Cli.csproj" />
+    <ProjectReference Include="..\packaging\Cadenza.SdkResolver\Cadenza.SdkResolver.csproj" />
   </ItemGroup>
 </Project>
