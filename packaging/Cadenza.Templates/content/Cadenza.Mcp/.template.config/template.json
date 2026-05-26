@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Cadenza contributors",
+    "classifications": [ "Common", "Cadenza", "AI", "MCP", "Script" ],
+    "identity": "Cadenza.Templates.Mcp",
+    "name": "Cadenza MCP Server Script",
+    "description": "A single-file Cadenza Model Context Protocol server (stdio transport). Use Tool/Resource/Prompt to expose capabilities to AI clients like Claude Desktop, Cursor, and VS Code Copilot Agent.",
+    "shortName": "cadenza-mcp",
+    "tags": {
+        "language": "C#",
+        "type": "project"
+    },
+    "sourceName": "app",
+    "preferNameDirectory": true,
+    "defaultName": "MyMcpServer"
+}

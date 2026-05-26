@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="5.0">
+    <id>Cadenza.Templates</id>
+    <version>$version$</version>
+    <title>Cadenza Templates</title>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
+    <description>`dotnet new` project templates for the Cadenza single-file scripting SDK family. Provides starters for all four variants — console, worker, web (Minimal API), and MCP server — each producing a single `.cs` file ready to `dotnet run`.</description>
+    <summary>Project templates for Cadenza single-file .NET scripts.</summary>
+    <projectUrl>$projectUrl$</projectUrl>
+    <repository type="git" url="$repositoryUrl$" commit="$commit$" />
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>$copyright$</copyright>
+    <tags>cadenza template dotnet-new scripting console worker web minimal-api mcp ai file-based-apps</tags>
+    <readme>README.md</readme>
+    <packageTypes>
+      <packageType name="Template" />
+    </packageTypes>
+  </metadata>
+  <files>
+    <file src="content\**" target="content" />
+    <file src="README.md" target="" />
+    <file src="README.ko.md" target="" />
+  </files>
+</package>

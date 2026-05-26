@@ -16,6 +16,8 @@
 | `Cadenza.Web` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Web.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Web) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Web.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Web) | 웹 API, Minimal API 스크립트 |
 | `Cadenza.Mcp` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Mcp.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Mcp) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Mcp.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Mcp) | Claude / Cursor / VS Code AI 에이전트용 MCP 서버 |
 
+추가로 동반 `dotnet new` 템플릿 패키지 [`Cadenza.Templates`](https://www.nuget.org/packages/Cadenza.Templates)가 네 변종의 starter를 제공합니다 (아래 [새 스크립트 시작](#dotnet-new로-새-스크립트-시작) 참조).
+
 스크립트 첫 줄에 `#:sdk` 디렉티브를 두어 변종을 선택합니다. **버전은 정확히 적어야 합니다** — MSBuild SDK 참조는 `1.*` 같은 wildcard를 지원하지 않습니다. 아래 버전은 nuget.org의 최신 버전으로 교체하세요:
 
 ```csharp
@@ -83,6 +85,20 @@ await Run();
 ```
 
 더 많은 샘플은 [samples/](samples/) 아래에 있습니다 — [샘플 인덱스](samples/README.ko.md)에 전체 목록이 정리돼 있습니다 (콘솔 glob/grep, git deploy guard, JSON 타입 HTTP fetch, 대화형 setup, config polling 워커, 웹 CRUD API, MCP 서버 등).
+
+### `dotnet new`로 새 스크립트 시작
+
+단일 템플릿 패키지 [`Cadenza.Templates`](https://www.nuget.org/packages/Cadenza.Templates)가 네 변종 모두의 starter를 제공합니다:
+
+```bash
+dotnet new install Cadenza.Templates
+dotnet new cadenza-console -n mytool   -o ./mytool      # 콘솔 / CLI
+dotnet new cadenza-worker  -n mydaemon -o ./mydaemon    # 백그라운드 서비스
+dotnet new cadenza-web     -n myapi    -o ./myapi       # Minimal API
+dotnet new cadenza-mcp     -n myserver -o ./myserver    # MCP 서버
+```
+
+각 명령은 `-n`에 지정한 이름으로 `.cs` 파일 한 장을 생성하고, 매칭되는 SDK 버전이 미리 핀돼 있으며 본문은 canonical starter 패턴을 담고 있습니다.
 
 ## 저장소 구조
 

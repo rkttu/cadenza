@@ -16,6 +16,8 @@ A single-file scripting SDK family for .NET 10+ file-based apps, distributed as 
 | `Cadenza.Web` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Web.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Web) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Web.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Web) | Web APIs, Minimal API scripts |
 | `Cadenza.Mcp` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Mcp.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Mcp) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Mcp.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Mcp) | MCP servers for Claude / Cursor / VS Code AI agents |
 
+Plus a companion `dotnet new` template package [`Cadenza.Templates`](https://www.nuget.org/packages/Cadenza.Templates) that ships starters for all four variants (see [Bootstrap a new script](#bootstrap-a-new-script-with-dotnet-new) below).
+
 Select a variant by adding a `#:sdk` directive to the first line of your script. **The version must be exact** — MSBuild SDK references do not support wildcards like `1.*`. Replace the version below with the latest from nuget.org:
 
 ```csharp
@@ -83,6 +85,20 @@ await Run();
 ```
 
 More samples under [samples/](samples/) — see the [sample index](samples/README.md) for the full list (console glob/grep, git deploy guard, JSON-typed HTTP fetch, interactive setup, worker with config polling, web CRUD API, MCP servers).
+
+### Bootstrap a new script with `dotnet new`
+
+A single template package, [`Cadenza.Templates`](https://www.nuget.org/packages/Cadenza.Templates), provides starters for all four variants:
+
+```bash
+dotnet new install Cadenza.Templates
+dotnet new cadenza-console -n mytool   -o ./mytool      # console / CLI
+dotnet new cadenza-worker  -n mydaemon -o ./mydaemon    # background service
+dotnet new cadenza-web     -n myapi    -o ./myapi       # Minimal API
+dotnet new cadenza-mcp     -n myserver -o ./myserver    # MCP server
+```
+
+Each command produces a single `.cs` file (named after `-n`) pre-pinned to the matching SDK version with a canonical starter pattern in the body.
 
 ## Repository layout
 
