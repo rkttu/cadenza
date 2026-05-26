@@ -10,7 +10,7 @@
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.13
+#:sdk Cadenza@1.0.14
 
 foreach (var file in Glob("**/*.md"))
 {

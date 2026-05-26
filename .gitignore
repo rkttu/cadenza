@@ -228,6 +228,11 @@ PublishScripts/
 *.snupkg
 # Local pack output
 /artifacts/
+
+# Codex CLI sample CODEX_HOME directories (generated at runtime by
+# samples/agent-codex-*.cs — contain history.jsonl, installation_id,
+# SQLite session databases, etc.).
+samples/.cadenza-codex-*/
 # The packages folder can be ignored because of Package Restore
 **/[Pp]ackages/*
 # except build/, which is used as an MSBuild target.

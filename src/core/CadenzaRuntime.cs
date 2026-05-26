@@ -23,7 +23,12 @@ internal static class CadenzaRuntime
         // On Linux/macOS, modern locales already default to UTF-8 so the
         // assignments are effectively no-ops; we set them anyway for parity
         // with non-UTF-8 LANG environments (LANG=C, POSIX, etc).
-        try { Console.OutputEncoding = Encoding.UTF8; } catch { }
-        try { Console.InputEncoding  = Encoding.UTF8; } catch { }
+        // BOM-less UTF-8 — `Encoding.UTF8` would prepend `EF BB BF` to stdout,
+        // which corrupts pipes (`cadenza-script | jq`, `> file`, etc.) and
+        // shows up as `` characters in terminals that don't recognize a
+        // BOM at the start of a stream.
+        var utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+        try { Console.OutputEncoding = utf8NoBom; } catch { }
+        try { Console.InputEncoding  = utf8NoBom; } catch { }
     }
 }

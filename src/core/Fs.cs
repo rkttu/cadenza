@@ -13,15 +13,23 @@ namespace Cadenza;
 /// </summary>
 public static class Fs
 {
+    // BOM-less UTF-8 — the framework's `Encoding.UTF8` is a BOM-emitting variant
+    // (3-byte `EF BB BF` preamble on writes), which corrupts files consumed by
+    // strict JSON / YAML / TOML parsers (Rust serde_json, Python json, etc.).
+    // Writes go through this shared instance so user scripts get the modern
+    // BOM-less default; reads are unaffected because the framework's UTF-8
+    // decoder transparently strips a leading BOM either way.
+    private static readonly UTF8Encoding _utf8NoBom = new(encoderShouldEmitUTF8Identifier: false);
+
     /// <summary>Reads <paramref name="path"/> as UTF-8 text.</summary>
     /// <param name="path">File path. Relative paths resolve against <see cref="Env.Cwd"/>.</param>
     /// <returns>The entire file contents as a string.</returns>
     public static string ReadText(string path) => File.ReadAllText(path, Encoding.UTF8);
 
-    /// <summary>Writes <paramref name="content"/> to <paramref name="path"/> as UTF-8 text, overwriting any existing file.</summary>
+    /// <summary>Writes <paramref name="content"/> to <paramref name="path"/> as BOM-less UTF-8 text, overwriting any existing file.</summary>
     /// <param name="path">Destination file path.</param>
     /// <param name="content">Text to write.</param>
-    public static void WriteText(string path, string content) => File.WriteAllText(path, content, Encoding.UTF8);
+    public static void WriteText(string path, string content) => File.WriteAllText(path, content, _utf8NoBom);
 
     /// <summary>Reads <paramref name="path"/> as raw bytes.</summary>
     public static byte[] ReadBytes(string path) => File.ReadAllBytes(path);

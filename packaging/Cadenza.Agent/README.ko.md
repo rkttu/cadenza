@@ -10,7 +10,7 @@
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.13
+#:sdk Cadenza.Agent@1.0.14
 
 SystemPrompt("당신은 파일 시스템에 접근할 수 있는 친절한 비서입니다.");
 

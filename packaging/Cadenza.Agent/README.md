@@ -10,7 +10,7 @@ Create an `agent.cs` file:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.13
+#:sdk Cadenza.Agent@1.0.14
 
 SystemPrompt("You are a helpful assistant with filesystem access.");
 

@@ -17,11 +17,11 @@ The NuGetSdkResolver did not resolve this SDK because there was no version speci
 스크립트에 정확한 SemVer 버전을 직접 적습니다:
 
 ```csharp
-#:sdk Cadenza@1.0.13
-#:sdk Cadenza.Worker@1.0.13
-#:sdk Cadenza.Web@1.0.13
-#:sdk Cadenza.Mcp@1.0.13
-#:sdk Cadenza.Agent@1.0.13
+#:sdk Cadenza@1.0.14
+#:sdk Cadenza.Worker@1.0.14
+#:sdk Cadenza.Web@1.0.14
+#:sdk Cadenza.Mcp@1.0.14
+#:sdk Cadenza.Agent@1.0.14
 ```
 
 새 릴리스로 이동할 때 이 줄을 직접 갱신해야 합니다. 최신 버전은 [nuget.org/packages/Cadenza](https://www.nuget.org/packages/Cadenza)에서 확인합니다.
@@ -33,11 +33,11 @@ The NuGetSdkResolver did not resolve this SDK because there was no version speci
 ```json
 {
   "msbuild-sdks": {
-    "Cadenza": "1.0.13",
-    "Cadenza.Worker": "1.0.13",
-    "Cadenza.Web": "1.0.13",
-    "Cadenza.Mcp": "1.0.13",
-    "Cadenza.Agent": "1.0.13"
+    "Cadenza": "1.0.14",
+    "Cadenza.Worker": "1.0.14",
+    "Cadenza.Web": "1.0.14",
+    "Cadenza.Mcp": "1.0.14",
+    "Cadenza.Agent": "1.0.14"
   }
 }
 ```
@@ -113,7 +113,7 @@ dotnet nuget list source
 
 ## macOS: `error MSB3552: 리소스 파일 "**/*.resx"을(를) 찾을 수 없습니다`
 
-Cadenza 1.0.0 이하 버전에서 발생할 수 있는 macOS 전용 빌드 오류. 1.0.1에서 수정됐습니다. 위의 캐시 리셋 절차로 1.0.1 이상을 받은 뒤 `#:sdk Cadenza@1.0.13`로 정확한 버전을 핀하세요.
+Cadenza 1.0.0 이하 버전에서 발생할 수 있는 macOS 전용 빌드 오류. 1.0.1에서 수정됐습니다. 위의 캐시 리셋 절차로 1.0.1 이상을 받은 뒤 `#:sdk Cadenza@1.0.14`로 정확한 버전을 핀하세요.
 
 ---
 

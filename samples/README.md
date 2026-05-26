@@ -9,9 +9,9 @@ dotnet run <file>.cs
 ```
 
 Pin the SDK version in the `#:sdk` line of each sample to the latest published
-release (the files in this folder currently pin `Cadenza@1.0.13`,
-`Cadenza.Worker@1.0.13`, `Cadenza.Web@1.0.13`, `Cadenza.Mcp@1.0.13`,
-`Cadenza.Agent@1.0.13`). MSBuild SDK references require an exact version —
+release (the files in this folder currently pin `Cadenza@1.0.14`,
+`Cadenza.Worker@1.0.14`, `Cadenza.Web@1.0.14`, `Cadenza.Mcp@1.0.14`,
+`Cadenza.Agent@1.0.14`). MSBuild SDK references require an exact version —
 see [docs/troubleshooting.md](../docs/troubleshooting.md) for details.
 
 ## Console scripts (`#:sdk Cadenza@...`)
@@ -69,7 +69,8 @@ they route through `ILogger` to stderr.
 | --- | --- |
 | [`agent-basic.cs`](agent-basic.cs) | Minimal agent — `Tool` registrations + `UseOllama` + `Run` (OpenAI-compatible HTTP server on `localhost:8080`) |
 | [`agent-rag-folder.cs`](agent-rag-folder.cs) | Tiny RAG-over-a-folder pattern — `search_docs` / `read_doc` tools the model decides when to call |
-| [`agent-codex-backend.cs`](agent-codex-backend.cs) | Drop-in backend for Codex / Aider / Continue / Cursor — point `OPENAI_BASE_URL` at it |
+| [`agent-codex-backend.cs`](agent-codex-backend.cs) | Codex CLI backend with `wire_api = "responses"` config snippet — Ollama as the model |
+| [`agent-codex-openrouter.cs`](agent-codex-openrouter.cs) | Codex CLI on top of any [OpenRouter](https://openrouter.ai/) model (Claude / GPT / Gemini / Llama / …) — proxy through Cadenza |
 | [`agent-multi-llm.cs`](agent-multi-llm.cs) | Pick `Ollama` / `OpenAI` / `Anthropic` / `Azure OpenAI` at startup from `LLM_BACKEND` env var |
 | [`agent-openrouter.cs`](agent-openrouter.cs) | Route through [OpenRouter](https://openrouter.ai/) (one API key, hundreds of models) via `UseChatClient` + custom OpenAI endpoint |
 | [`agent-console-repl.cs`](agent-console-repl.cs) | `ChatLoop()` instead of `Run()` — interactive console, no HTTP server |

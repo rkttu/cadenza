@@ -6,7 +6,7 @@
     <title>Cadenza.Agent SDK</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
-    <description>Single-file scripting SDK for .NET 10+ AI agents. Vendor-neutral wrapper over Microsoft.Extensions.AI that exposes an OpenAI-compatible Chat Completion HTTP endpoint, so tools like Codex / Aider / Continue / Cursor can talk to your agent as if it were OpenAI. Plug in Ollama, OpenAI, Anthropic, Azure OpenAI, or any IChatClient. Use with `#:sdk Cadenza.Agent@1.0.13` in file-based apps (replace with latest version — MSBuild SDK refs require exact versions).</description>
+    <description>Single-file scripting SDK for .NET 10+ AI agents. Vendor-neutral wrapper over Microsoft.Extensions.AI that exposes an OpenAI-compatible Chat Completion HTTP endpoint, so tools like Codex / Aider / Continue / Cursor can talk to your agent as if it were OpenAI. Plug in Ollama, OpenAI, Anthropic, Azure OpenAI, or any IChatClient. Use with `#:sdk Cadenza.Agent@1.0.14` in file-based apps (replace with latest version — MSBuild SDK refs require exact versions).</description>
     <summary>MSBuild SDK for .NET 10 file-based AI agents with OpenAI-compatible HTTP frontend.</summary>
     <projectUrl>$projectUrl$</projectUrl>
     <repository type="git" url="$repositoryUrl$" commit="$commit$" />

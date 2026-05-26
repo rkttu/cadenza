@@ -8,7 +8,7 @@
 dotnet run <file>.cs
 ```
 
-각 샘플의 `#:sdk` 줄에는 최신 게시 버전을 정확히 핀해야 합니다 (현재 이 폴더의 파일들은 `Cadenza@1.0.13`, `Cadenza.Worker@1.0.13`, `Cadenza.Web@1.0.13`, `Cadenza.Mcp@1.0.13`, `Cadenza.Agent@1.0.13`로 고정). MSBuild SDK 참조는 정확한 버전만 받습니다 — 자세한 내용은 [docs/troubleshooting.ko.md](../docs/troubleshooting.ko.md).
+각 샘플의 `#:sdk` 줄에는 최신 게시 버전을 정확히 핀해야 합니다 (현재 이 폴더의 파일들은 `Cadenza@1.0.14`, `Cadenza.Worker@1.0.14`, `Cadenza.Web@1.0.14`, `Cadenza.Mcp@1.0.14`, `Cadenza.Agent@1.0.14`로 고정). MSBuild SDK 참조는 정확한 버전만 받습니다 — 자세한 내용은 [docs/troubleshooting.ko.md](../docs/troubleshooting.ko.md).
 
 ## 콘솔 스크립트 (`#:sdk Cadenza@...`)
 
@@ -62,7 +62,8 @@ Cadenza.Mcp 서버는 Claude Desktop 설정에 다음을 추가해 등록:
 | --- | --- |
 | [`agent-basic.cs`](agent-basic.cs) | 최소 에이전트 — `Tool` 등록 + `UseOllama` + `Run` (`localhost:8080`의 OpenAI 호환 HTTP 서버) |
 | [`agent-rag-folder.cs`](agent-rag-folder.cs) | 폴더 위 RAG 패턴 — 모델이 호출 시점을 결정하는 `search_docs` / `read_doc` 도구 |
-| [`agent-codex-backend.cs`](agent-codex-backend.cs) | Codex / Aider / Continue / Cursor용 drop-in 백엔드 — `OPENAI_BASE_URL`만 가리키게 하면 끝 |
+| [`agent-codex-backend.cs`](agent-codex-backend.cs) | Codex CLI 백엔드 — `wire_api = "responses"` config 스니펫 포함, 모델은 Ollama |
+| [`agent-codex-openrouter.cs`](agent-codex-openrouter.cs) | [OpenRouter](https://openrouter.ai/)의 임의 모델(Claude / GPT / Gemini / Llama / …) 위에 Codex CLI 얹기 — Cadenza 통해 프록시 |
 | [`agent-multi-llm.cs`](agent-multi-llm.cs) | `LLM_BACKEND` 환경변수로 시작 시 `Ollama` / `OpenAI` / `Anthropic` / `Azure OpenAI` 선택 |
 | [`agent-openrouter.cs`](agent-openrouter.cs) | [OpenRouter](https://openrouter.ai/)를 통한 라우팅 (API 키 하나로 수백 개 모델) — `UseChatClient` + 커스텀 OpenAI endpoint 패턴 |
 | [`agent-console-repl.cs`](agent-console-repl.cs) | `Run()` 대신 `ChatLoop()` — HTTP 서버 없는 대화형 콘솔 |

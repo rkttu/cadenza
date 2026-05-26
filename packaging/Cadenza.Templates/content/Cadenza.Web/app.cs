@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.13
+#:sdk Cadenza.Web@1.0.14
 
 // Cadenza Minimal API script. Tier 1 bare names:
 //   Get/Post/Put/Delete/Map(path, handler)   — route registration

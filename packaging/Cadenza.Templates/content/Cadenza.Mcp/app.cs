@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.13
+#:sdk Cadenza.Mcp@1.0.14
 
 // Cadenza MCP server script. Tier 1 bare names:
 //   Tool(name, description, handler)       — register an MCP tool
