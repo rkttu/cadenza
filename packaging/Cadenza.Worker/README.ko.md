@@ -10,7 +10,7 @@
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.11
+#:sdk Cadenza.Worker@1.0.12
 
 await Run(async (ct) =>
 {

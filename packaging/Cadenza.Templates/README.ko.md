@@ -18,6 +18,7 @@ dotnet new install Cadenza.Templates
 | `cadenza-worker` | `Cadenza.Worker` | 백그라운드 서비스 / 데몬 |
 | `cadenza-web` | `Cadenza.Web` | Minimal API 엔드포인트 |
 | `cadenza-mcp` | `Cadenza.Mcp` | Claude Desktop / Cursor / VS Code AI용 MCP 서버 |
+| `cadenza-agent` | `Cadenza.Agent` | OpenAI 호환 HTTP 프론트엔드를 가진 AI 에이전트 (Ollama / OpenAI / Anthropic / Azure OpenAI) |
 
 ```bash
 dotnet new cadenza -n mytool -o ./mytool   # cadenza-console의 별칭
@@ -29,7 +30,7 @@ dotnet run mytool.cs
 
 ## 카테고리
 
-네 템플릿 모두 `Cadenza` classification 태그를 공유해 Visual Studio "New Project" 다이얼로그가 향후 표시할 때 한 그룹으로 묶이고, 각자 고유 변종 태그(`Console`, `Worker`, `Web`/`WebAPI`, `AI`/`MCP`)도 함께 가져 해당 필터에서도 노출됩니다. `defaultName`은 변종별 합리적 기본명을 미리 채워줍니다 (`MyScript`, `MyWorker`, `MyApi`, `MyMcpServer`).
+다섯 템플릿 모두 `Cadenza` classification 태그를 공유해 Visual Studio "New Project" 다이얼로그가 향후 표시할 때 한 그룹으로 묶이고, 각자 고유 변종 태그(`Console`, `Worker`, `Web`/`WebAPI`, `AI`/`MCP`, `AI`/`Agent`)도 함께 가져 해당 필터에서도 노출됩니다. `defaultName`은 변종별 합리적 기본명을 미리 채워줍니다 (`MyScript`, `MyWorker`, `MyApi`, `MyMcpServer`, `MyAgent`).
 
 ## 제거
 

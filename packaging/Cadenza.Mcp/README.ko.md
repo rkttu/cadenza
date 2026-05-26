@@ -10,7 +10,7 @@
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.11
+#:sdk Cadenza.Mcp@1.0.12
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));

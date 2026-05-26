@@ -1,0 +1,78 @@
+<Project>
+  <!-- 1) Import base SDK first — we ride on Sdk.Web for ASP.NET Core. -->
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk.Web" />
+
+  <!-- 2) Cadenza compile settings -->
+  <PropertyGroup>
+    <TargetFramework Condition=" '$(TargetFramework)' == '' ">net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <!-- File-based apps have no `.resx`; suppress the default glob so a stray
+         `**/*.resx` literal cannot reach GenerateResource on non-Windows hosts. -->
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <!-- NU1510: System.Text.Encoding.CodePages registers code pages via
+         reflection so the trimmer cannot follow it. It IS needed at runtime
+         for Sh.Capture; silence the spurious "unused dependency" warning. -->
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
+  </PropertyGroup>
+
+  <!-- 2b) File-based program defaults — see Cadenza.Web/Sdk/Sdk.props for rationale. -->
+  <PropertyGroup Condition=" '$(FileBasedProgram)' == 'true' ">
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+
+  <!-- 3) Cadenza source files + global usings.
+       `Cadenza.Agent.Agent` is brought in as a static using so users can
+       call `Tool(...)`, `UseOllama(...)`, `Run()`, etc. as bare names. -->
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)../content/core/**/*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../content/web/**/*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../content/agent/**/*.cs" />
+
+    <Using Include="Cadenza" />
+    <Using Include="Cadenza.Web" />
+    <Using Include="Cadenza.Agent" />
+    <Using Include="Cadenza.Sh" Static="true" />
+    <Using Include="Cadenza.Fs" Static="true" />
+    <Using Include="Cadenza.Agent.Agent" Static="true" />
+    <Using Include="System.Console" Static="true" />
+
+    <!-- Re-export the most useful MEAI surface so users can write `ChatMessage`,
+         `ChatRole`, `IChatClient`, etc. without importing the namespace. -->
+    <Using Include="Microsoft.Extensions.AI" />
+  </ItemGroup>
+
+  <!-- 3b) Re-add the file-based program entry point since we disabled defaults. -->
+  <ItemGroup Condition=" '$(FileBasedProgram)' == 'true' And '$(EntryPointFilePath)' != '' ">
+    <Compile Include="$(EntryPointFilePath)" />
+  </ItemGroup>
+
+  <!-- 3c) Required runtime packages:
+         - Microsoft.Extensions.AI: vendor-neutral LLM abstraction
+         - Microsoft.Extensions.AI.OpenAI: OpenAI / Azure OpenAI / Anthropic
+           (via OpenAI-compatible endpoint) bridge
+         - OpenAI: the official .NET SDK that the MEAI OpenAI bridge wraps
+         - OllamaSharp: local Ollama daemon client (implements IChatClient
+           directly on 5+)
+         - Microsoft.Extensions.Hosting: optional; useful when users want
+           background services, IConfiguration, etc.
+         - System.Text.Encoding.CodePages: for Sh.Capture's OEM decoding -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI" Version="10.6.0" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.6.0" />
+    <PackageReference Include="OpenAI" Version="2.10.0" />
+    <PackageReference Include="OllamaSharp" Version="5.4.25" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- 4) Default deployment settings — same policy as the rest of the Cadenza family. -->
+  <PropertyGroup>
+    <PublishAot>false</PublishAot>
+    <PublishSingleFile Condition=" '$(PublishSingleFile)' == '' ">true</PublishSingleFile>
+    <PublishReadyToRun Condition=" '$(PublishReadyToRun)' == '' ">true</PublishReadyToRun>
+    <EnableCompressionInSingleFile Condition=" '$(EnableCompressionInSingleFile)' == '' ">true</EnableCompressionInSingleFile>
+    <IncludeNativeLibrariesForSelfExtract Condition=" '$(IncludeNativeLibrariesForSelfExtract)' == '' ">false</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+</Project>

@@ -9,10 +9,10 @@ dotnet run <file>.cs
 ```
 
 Pin the SDK version in the `#:sdk` line of each sample to the latest published
-release (the files in this folder currently pin `Cadenza@1.0.11`,
-`Cadenza.Worker@1.0.11`, `Cadenza.Web@1.0.11`). MSBuild SDK references require
-an exact version — see [docs/troubleshooting.md](../docs/troubleshooting.md)
-for details.
+release (the files in this folder currently pin `Cadenza@1.0.12`,
+`Cadenza.Worker@1.0.12`, `Cadenza.Web@1.0.12`, `Cadenza.Mcp@1.0.12`,
+`Cadenza.Agent@1.0.12`). MSBuild SDK references require an exact version —
+see [docs/troubleshooting.md](../docs/troubleshooting.md) for details.
 
 ## Console scripts (`#:sdk Cadenza@...`)
 
@@ -62,6 +62,24 @@ Register a Cadenza.Mcp server with Claude Desktop by adding to its config:
 `ReadLine` as Tier 1 bare names. Stdio MCP servers carry JSON-RPC over stdout;
 any stray text breaks the client connection. Use `Log.*` for diagnostics —
 they route through `ILogger` to stderr.
+
+## AI agent scripts (`#:sdk Cadenza.Agent@...`)
+
+| Sample | Demonstrates |
+| --- | --- |
+| [`agent-basic.cs`](agent-basic.cs) | Minimal agent — `Tool` registrations + `UseOllama` + `Run` (OpenAI-compatible HTTP server on `localhost:8080`) |
+| [`agent-rag-folder.cs`](agent-rag-folder.cs) | Tiny RAG-over-a-folder pattern — `search_docs` / `read_doc` tools the model decides when to call |
+| [`agent-codex-backend.cs`](agent-codex-backend.cs) | Drop-in backend for Codex / Aider / Continue / Cursor — point `OPENAI_BASE_URL` at it |
+| [`agent-multi-llm.cs`](agent-multi-llm.cs) | Pick `Ollama` / `OpenAI` / `Anthropic` / `Azure OpenAI` at startup from `LLM_BACKEND` env var |
+| [`agent-console-repl.cs`](agent-console-repl.cs) | `ChatLoop()` instead of `Run()` — interactive console, no HTTP server |
+
+Point any OpenAI-compatible client at a `Cadenza.Agent`:
+
+```bash
+export OPENAI_BASE_URL=http://localhost:8080/v1
+export OPENAI_API_KEY=any-non-empty-string
+codex      # or aider, continue, cursor, sgpt, …
+```
 
 ## Publishing as a single binary
 

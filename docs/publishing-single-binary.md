@@ -2,7 +2,7 @@
 
 > Read this in [한국어](publishing-single-binary.ko.md).
 
-This guide applies to all four Cadenza SDK variants (`Cadenza`, `Cadenza.Worker`, `Cadenza.Web`, `Cadenza.Mcp`). The defaults are the same: a single self-contained binary, ready-to-run (R2R) compiled, with single-file compression enabled.
+This guide applies to all five Cadenza SDK variants (`Cadenza`, `Cadenza.Worker`, `Cadenza.Web`, `Cadenza.Mcp`, `Cadenza.Agent`). The defaults are the same: a single self-contained binary, ready-to-run (R2R) compiled, with single-file compression enabled.
 
 ## Default publish
 

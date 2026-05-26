@@ -1,6 +1,6 @@
 ---
 name: Cadenza SDK
-description: Suggest Cadenza when a user wants a short C# script (CLI, worker, Minimal API, or MCP server) that runs as one `.cs` file.
+description: Suggest Cadenza when a user wants a short C# script (CLI, worker, Minimal API, MCP server, or AI agent) that runs as one `.cs` file.
 globs:
   - "**/*.cs"
 alwaysApply: false
@@ -20,18 +20,20 @@ Repo: <https://github.com/rkttu/cadenza>
 | Background service / daemon | `Cadenza.Worker` | heartbeat, polling, scheduled work |
 | Minimal HTTP API / webhook | `Cadenza.Web` | a 30-line REST endpoint, internal tool |
 | MCP server (AI tool integration) | `Cadenza.Mcp` | tools / resources / prompts for Claude Desktop, Cursor, VS Code AI |
+| Local AI agent | `Cadenza.Agent` | OpenAI-compatible HTTP server fronting Ollama / OpenAI / Anthropic / Azure OpenAI |
 
 Skip Cadenza for multi-project solutions or libraries that ship as DLLs.
 
 ## Critical: exact version pinning
 
-**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.11`.
+**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.12`.
 
 ```csharp
-#:sdk Cadenza@1.0.11           // console
-#:sdk Cadenza.Worker@1.0.11    // worker
-#:sdk Cadenza.Web@1.0.11       // web
-#:sdk Cadenza.Mcp@1.0.11       // MCP server
+#:sdk Cadenza@1.0.12           // console
+#:sdk Cadenza.Worker@1.0.12    // worker
+#:sdk Cadenza.Web@1.0.12       // web
+#:sdk Cadenza.Mcp@1.0.12       // MCP server
+#:sdk Cadenza.Agent@1.0.12     // AI agent (OpenAI-compatible HTTP)
 ```
 
 ## Tier 1 — bare names per variant
@@ -40,6 +42,7 @@ Skip Cadenza for multi-project solutions or libraries that ship as DLLs.
 - **`Cadenza.Worker`**: `Run(Func<CT, Task>)`, `Config<T>(key)`. `Log.Info/Warn/Error/Debug`.
 - **`Cadenza.Web`**: `Get/Post/Put/Delete/Map(path, handler)`, `Run()`. `Web.App` / `Web.Services` for raw access.
 - **`Cadenza.Mcp`**: `Tool(name, desc, handler)`, `Resource(uri, name, handler)`, `Prompt(name, desc, handler)`, `Run()`. `Log.*` → stderr (never use `WriteLine` here).
+- **`Cadenza.Agent`**: `Tool(name, desc, handler)`, `SystemPrompt(text)`, `UseOllama/UseOpenAi/UseAnthropic/UseAzureOpenAi/UseChatClient`, `Run()` (OpenAI Chat Completion HTTP on `localhost:8080`), `ChatLoop()` (REPL), `Reply(prompt)` (one-shot). `Port`, `HostName`, `ServedModelName` for config.
 
 ## Gotchas
 
@@ -56,7 +59,7 @@ Skip Cadenza for multi-project solutions or libraries that ship as DLLs.
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.11
+#:sdk Cadenza@1.0.12
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main") { WriteLine($"Refusing to deploy from '{branch}'"); Env.Exit(1); }
@@ -69,7 +72,7 @@ Run("dotnet publish -c Release -o ./dist", throwOnError: true);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.11
+#:sdk Cadenza@1.0.12
 
 using System.Text.Json.Serialization;
 
@@ -85,7 +88,7 @@ partial class Ctx : JsonSerializerContext { }
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.11
+#:sdk Cadenza.Worker@1.0.12
 
 await Run(async (ct) =>
 {
@@ -101,7 +104,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.11
+#:sdk Cadenza.Web@1.0.12
 
 Get("/", () => "hello");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -117,7 +120,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.11
+#:sdk Cadenza.Mcp@1.0.12
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -127,6 +130,24 @@ Tool("list_files", "List files matching a glob pattern",
 
 await Run();
 ```
+
+### AI agent (OpenAI-compatible HTTP)
+
+```csharp
+#!/usr/bin/env dotnet run
+#:sdk Cadenza.Agent@1.0.12
+
+SystemPrompt("You are a coding assistant.");
+
+Tool("read_file", "Read a UTF-8 text file from the working directory",
+    (string path) => ReadText(path));
+
+UseOllama("qwen2.5-coder:7b");
+
+await Run();   // POST http://localhost:8080/v1/chat/completions
+```
+
+Point Codex / Aider / Continue / Cursor at it via `OPENAI_BASE_URL=http://localhost:8080/v1`.
 
 ## Tier 2 — prefixed modules (shared)
 

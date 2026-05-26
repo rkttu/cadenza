@@ -2,7 +2,7 @@
 
 > [English](publishing-single-binary.md)로 보기.
 
-이 가이드는 Cadenza SDK 네 변종 모두(`Cadenza`, `Cadenza.Worker`, `Cadenza.Web`, `Cadenza.Mcp`)에 동일하게 적용됩니다. 기본값은 자체 포함 단일 바이너리 + R2R (ready-to-run) 컴파일 + single-file 압축입니다.
+이 가이드는 Cadenza SDK 다섯 변종 모두(`Cadenza`, `Cadenza.Worker`, `Cadenza.Web`, `Cadenza.Mcp`, `Cadenza.Agent`)에 동일하게 적용됩니다. 기본값은 자체 포함 단일 바이너리 + R2R (ready-to-run) 컴파일 + single-file 압축입니다.
 
 ## 기본 publish
 

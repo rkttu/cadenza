@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.11
+#:sdk Cadenza@1.0.12
 
 using System.Text.Json.Serialization;
 

@@ -18,6 +18,7 @@ dotnet new install Cadenza.Templates
 | `cadenza-worker` | `Cadenza.Worker` | Background service / daemon |
 | `cadenza-web` | `Cadenza.Web` | Minimal API endpoint |
 | `cadenza-mcp` | `Cadenza.Mcp` | MCP server for Claude Desktop / Cursor / VS Code AI |
+| `cadenza-agent` | `Cadenza.Agent` | AI agent with OpenAI-compatible HTTP frontend (Ollama / OpenAI / Anthropic / Azure OpenAI) |
 
 ```bash
 dotnet new cadenza -n mytool -o ./mytool   # alias for cadenza-console
@@ -29,7 +30,7 @@ Each starter pins the matching SDK version, lists the Tier 1 bare names availabl
 
 ## Categorization
 
-All four templates carry the `Cadenza` classification tag so they group together in Visual Studio's "New Project" dialog (once VS surfaces them as of a later release), while each also carries its own variant tag (`Console`, `Worker`, `Web` / `WebAPI`, `AI` / `MCP`) so they appear under those filters too. The `defaultName` pre-fills a sensible project name per variant (e.g., `MyScript`, `MyWorker`, `MyApi`, `MyMcpServer`).
+All five templates carry the `Cadenza` classification tag so they group together in Visual Studio's "New Project" dialog (once VS surfaces them as of a later release), while each also carries its own variant tag (`Console`, `Worker`, `Web` / `WebAPI`, `AI` / `MCP`, `AI` / `Agent`) so they appear under those filters too. The `defaultName` pre-fills a sensible project name per variant (e.g., `MyScript`, `MyWorker`, `MyApi`, `MyMcpServer`, `MyAgent`).
 
 ## Uninstall
 

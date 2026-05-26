@@ -10,13 +10,13 @@
 #:sdk Cadenza@*             // wildcard alias
 ```
 
-The canonical Cadenza workflow does NOT require this package — `dotnet run app.cs` with an exact pinned version (`#:sdk Cadenza@1.0.11`) already works without any extra install. Install this resolver only if you specifically want the version-less / `@latest` shorthand in scripts where reproducibility is not critical (quick experiments, REPL-style throwaway code).
+The canonical Cadenza workflow does NOT require this package — `dotnet run app.cs` with an exact pinned version (`#:sdk Cadenza@1.0.12`) already works without any extra install. Install this resolver only if you specifically want the version-less / `@latest` shorthand in scripts where reproducibility is not critical (quick experiments, REPL-style throwaway code).
 
 For production scripts you want to pin an exact version anyway. See the [project repository](https://github.com/rkttu/cadenza) for the broader story.
 
 ## How it fits into MSBuild
 
-MSBuild walks a chain of SDK resolvers in priority order. The bundled NuGet resolver activates only when a version is specified. This resolver runs at priority 4500 (before NuGet at 5500), recognizes any `Cadenza*` SDK reference with an empty / `latest` / `*` version, queries `https://api.nuget.org/v3-flatcontainer/<id>/index.json` for the highest stable SemVer, downloads the matching nupkg into `~/.nuget/packages/`, and returns the path to its `Sdk/` directory. Concrete versions (e.g. `Cadenza@1.0.11`) are deferred to the NuGet resolver via a `null` return.
+MSBuild walks a chain of SDK resolvers in priority order. The bundled NuGet resolver activates only when a version is specified. This resolver runs at priority 4500 (before NuGet at 5500), recognizes any `Cadenza*` SDK reference with an empty / `latest` / `*` version, queries `https://api.nuget.org/v3-flatcontainer/<id>/index.json` for the highest stable SemVer, downloads the matching nupkg into `~/.nuget/packages/`, and returns the path to its `Sdk/` directory. Concrete versions (e.g. `Cadenza@1.0.12`) are deferred to the NuGet resolver via a `null` return.
 
 ## Install
 

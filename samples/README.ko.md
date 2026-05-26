@@ -8,7 +8,7 @@
 dotnet run <file>.cs
 ```
 
-각 샘플의 `#:sdk` 줄에는 최신 게시 버전을 정확히 핀해야 합니다 (현재 이 폴더의 파일들은 `Cadenza@1.0.11`, `Cadenza.Worker@1.0.11`, `Cadenza.Web@1.0.11`, `Cadenza.Mcp@1.0.11`로 고정). MSBuild SDK 참조는 정확한 버전만 받습니다 — 자세한 내용은 [docs/troubleshooting.ko.md](../docs/troubleshooting.ko.md).
+각 샘플의 `#:sdk` 줄에는 최신 게시 버전을 정확히 핀해야 합니다 (현재 이 폴더의 파일들은 `Cadenza@1.0.12`, `Cadenza.Worker@1.0.12`, `Cadenza.Web@1.0.12`, `Cadenza.Mcp@1.0.12`, `Cadenza.Agent@1.0.12`로 고정). MSBuild SDK 참조는 정확한 버전만 받습니다 — 자세한 내용은 [docs/troubleshooting.ko.md](../docs/troubleshooting.ko.md).
 
 ## 콘솔 스크립트 (`#:sdk Cadenza@...`)
 
@@ -55,6 +55,24 @@ Cadenza.Mcp 서버는 Claude Desktop 설정에 다음을 추가해 등록:
 ```
 
 **중요**: Cadenza.Mcp는 의도적으로 `WriteLine` / `Write` / `ReadLine`을 Tier 1 bare name으로 노출하지 않습니다. stdio MCP 서버는 stdout으로 JSON-RPC를 보내므로, 사용자 코드가 stdout에 무언가 적으면 클라이언트 연결이 끊깁니다. 진단 출력은 `Log.*`를 사용하세요 — `ILogger`를 통해 stderr로 라우팅됩니다.
+
+## AI 에이전트 스크립트 (`#:sdk Cadenza.Agent@...`)
+
+| 샘플 | 보여주는 것 |
+| --- | --- |
+| [`agent-basic.cs`](agent-basic.cs) | 최소 에이전트 — `Tool` 등록 + `UseOllama` + `Run` (`localhost:8080`의 OpenAI 호환 HTTP 서버) |
+| [`agent-rag-folder.cs`](agent-rag-folder.cs) | 폴더 위 RAG 패턴 — 모델이 호출 시점을 결정하는 `search_docs` / `read_doc` 도구 |
+| [`agent-codex-backend.cs`](agent-codex-backend.cs) | Codex / Aider / Continue / Cursor용 drop-in 백엔드 — `OPENAI_BASE_URL`만 가리키게 하면 끝 |
+| [`agent-multi-llm.cs`](agent-multi-llm.cs) | `LLM_BACKEND` 환경변수로 시작 시 `Ollama` / `OpenAI` / `Anthropic` / `Azure OpenAI` 선택 |
+| [`agent-console-repl.cs`](agent-console-repl.cs) | `Run()` 대신 `ChatLoop()` — HTTP 서버 없는 대화형 콘솔 |
+
+`Cadenza.Agent`에 OpenAI 호환 클라이언트를 연결:
+
+```bash
+export OPENAI_BASE_URL=http://localhost:8080/v1
+export OPENAI_API_KEY=any-non-empty-string
+codex      # 또는 aider, continue, cursor, sgpt, …
+```
 
 ## 단일 바이너리 배포
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.11
+#:sdk Cadenza@1.0.12
 
 // Pre-flight script for a deploy: refuses to proceed unless the current git
 // branch is "main" and the working tree is clean. Then runs build + publish.

@@ -1,6 +1,6 @@
 # GitHub Copilot instructions for Cadenza
 
-This repository is the Cadenza SDK family — a .NET 10+ single-file scripting SDK distributed as four MSBuild SDK packages (`Cadenza`, `Cadenza.Worker`, `Cadenza.Web`, `Cadenza.Mcp`). The skill content below also applies when you (Copilot) help users write Cadenza scripts in other projects.
+This repository is the Cadenza SDK family — a .NET 10+ single-file scripting SDK distributed as five MSBuild SDK packages (`Cadenza`, `Cadenza.Worker`, `Cadenza.Web`, `Cadenza.Mcp`, `Cadenza.Agent`). The skill content below also applies when you (Copilot) help users write Cadenza scripts in other projects.
 
 Repo: <https://github.com/rkttu/cadenza>
 
@@ -14,18 +14,20 @@ Pick Cadenza when the user wants:
 | Background service / daemon | `Cadenza.Worker` | heartbeat, polling, scheduled work |
 | Minimal HTTP API / webhook | `Cadenza.Web` | a 30-line REST endpoint, internal tool |
 | MCP server (AI tool integration) | `Cadenza.Mcp` | tools / resources / prompts for Claude Desktop, Cursor, VS Code AI |
+| Local AI agent | `Cadenza.Agent` | OpenAI-compatible HTTP server fronting Ollama / OpenAI / Anthropic / Azure OpenAI — Codex / Aider / Continue / Cursor speak to it as if it were OpenAI |
 
 Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anything that needs a full csproj.
 
 ## Critical: exact version pinning
 
-**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.11`.
+**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.12`.
 
 ```csharp
-#:sdk Cadenza@1.0.11           // console
-#:sdk Cadenza.Worker@1.0.11    // worker
-#:sdk Cadenza.Web@1.0.11       // web
-#:sdk Cadenza.Mcp@1.0.11       // MCP server
+#:sdk Cadenza@1.0.12           // console
+#:sdk Cadenza.Worker@1.0.12    // worker
+#:sdk Cadenza.Web@1.0.12       // web
+#:sdk Cadenza.Mcp@1.0.12       // MCP server
+#:sdk Cadenza.Agent@1.0.12     // AI agent (OpenAI-compatible HTTP)
 ```
 
 ## Tier 1 — bare names per variant (no namespace prefix needed)
@@ -34,6 +36,7 @@ Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anythi
 - **`Cadenza.Worker`**: `Run(Func<CT, Task>)`, `Config<T>(key)`. `Log.Info/Warn/Error/Debug` via ILogger.
 - **`Cadenza.Web`**: `Get/Post/Put/Delete/Map(path, handler)`, `Run()`. `Web.App` / `Web.Services` for raw access.
 - **`Cadenza.Mcp`**: `Tool(name, desc, handler)`, `Resource(uri, name, handler)`, `Prompt(name, desc, handler)`, `Run()`. `Log.*` → stderr (never use `WriteLine` here).
+- **`Cadenza.Agent`**: `Tool(name, desc, handler)`, `SystemPrompt(text)`, `UseOllama/UseOpenAi/UseAnthropic/UseAzureOpenAi/UseChatClient`, `Run()` (OpenAI Chat Completion HTTP on `localhost:8080`), `ChatLoop()` (REPL), `Reply(prompt)` (one-shot). `Port`, `HostName`, `ServedModelName` for config.
 
 ## Gotchas
 
@@ -50,7 +53,7 @@ Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anythi
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.11
+#:sdk Cadenza@1.0.12
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main") { WriteLine($"Refusing to deploy from '{branch}'"); Env.Exit(1); }
@@ -63,7 +66,7 @@ Run("dotnet publish -c Release -o ./dist", throwOnError: true);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.11
+#:sdk Cadenza@1.0.12
 
 using System.Text.Json.Serialization;
 
@@ -81,7 +84,7 @@ partial class Ctx : JsonSerializerContext { }
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.11
+#:sdk Cadenza.Worker@1.0.12
 
 await Run(async (ct) =>
 {
@@ -97,7 +100,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.11
+#:sdk Cadenza.Web@1.0.12
 
 Get("/", () => "hello");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -113,7 +116,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.11
+#:sdk Cadenza.Mcp@1.0.12
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -135,6 +138,35 @@ Client config:
     }
   }
 }
+```
+
+### AI agent backing Codex / Aider / Continue / Cursor
+
+```csharp
+#!/usr/bin/env dotnet run
+#:sdk Cadenza.Agent@1.0.12
+
+ServedModelName = "cadenza-codex";
+
+SystemPrompt("You are a coding assistant. Ground answers in real files.");
+
+Tool("read_file", "Read a UTF-8 text file from the working directory",
+    (string path) => ReadText(path));
+
+Tool("list_files", "List files matching a glob pattern (e.g., src/**/*.cs)",
+    (string pattern) => Glob(pattern).ToArray());
+
+UseOllama("qwen2.5-coder:7b");   // or UseOpenAi / UseAnthropic / UseAzureOpenAi
+
+await Run();
+```
+
+Point the editor at it:
+
+```bash
+export OPENAI_BASE_URL=http://localhost:8080/v1
+export OPENAI_API_KEY=any-non-empty-string
+codex      # or aider, continue, cursor, sgpt, …
 ```
 
 ## Deployment

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="5.0">
+    <id>Cadenza.Agent</id>
+    <version>$version$</version>
+    <title>Cadenza.Agent SDK</title>
+    <authors>$authors$</authors>
+    <owners>$authors$</owners>
+    <description>Single-file scripting SDK for .NET 10+ AI agents. Vendor-neutral wrapper over Microsoft.Extensions.AI that exposes an OpenAI-compatible Chat Completion HTTP endpoint, so tools like Codex / Aider / Continue / Cursor can talk to your agent as if it were OpenAI. Plug in Ollama, OpenAI, Anthropic, Azure OpenAI, or any IChatClient. Use with `#:sdk Cadenza.Agent@1.0.12` in file-based apps (replace with latest version — MSBuild SDK refs require exact versions).</description>
+    <summary>MSBuild SDK for .NET 10 file-based AI agents with OpenAI-compatible HTTP frontend.</summary>
+    <projectUrl>$projectUrl$</projectUrl>
+    <repository type="git" url="$repositoryUrl$" commit="$commit$" />
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>$copyright$</copyright>
+    <tags>cadenza msbuild sdk scripting ai agent llm openai ollama anthropic claude azure-openai chat-completion codex aider continue cursor dotnet file-based-apps</tags>
+    <readme>README.md</readme>
+    <packageTypes>
+      <packageType name="MSBuildSdk" />
+    </packageTypes>
+  </metadata>
+  <files>
+    <file src="Sdk\Sdk.props"   target="Sdk\Sdk.props" />
+    <file src="Sdk\Sdk.targets" target="Sdk\Sdk.targets" />
+    <file src="..\..\src\core\**\*.cs"  target="content\core" />
+    <file src="..\..\src\web\**\*.cs"   target="content\web" />
+    <file src="..\..\src\agent\**\*.cs" target="content\agent" />
+    <file src="README.md" target="" />
+    <file src="README.ko.md" target="" />
+  </files>
+</package>

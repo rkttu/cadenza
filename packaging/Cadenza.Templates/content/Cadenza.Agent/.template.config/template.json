@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Cadenza contributors",
+    "classifications": [ "Common", "Cadenza", "AI", "Agent", "LLM", "Script" ],
+    "identity": "Cadenza.Templates.Agent",
+    "name": "Cadenza AI Agent Script",
+    "description": "A single-file Cadenza AI agent that exposes an OpenAI-compatible Chat Completion HTTP endpoint. Wraps Microsoft.Extensions.AI — plug in Ollama, OpenAI, Anthropic, or Azure OpenAI and let Codex / Aider / Continue / Cursor talk to it.",
+    "shortName": "cadenza-agent",
+    "tags": {
+        "language": "C#",
+        "type": "project"
+    },
+    "sourceName": "app",
+    "preferNameDirectory": true,
+    "defaultName": "MyAgent"
+}
