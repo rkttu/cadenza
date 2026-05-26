@@ -14,13 +14,13 @@ dotnet new install Cadenza.Templates
 
 | Short name | Variant | Produces |
 | --- | --- | --- |
-| `cadenza-console` | `Cadenza` | Console script (shell, CLI, build glue) |
+| `cadenza-console` (also `cadenza`) | `Cadenza` | Console script (shell, CLI, build glue) |
 | `cadenza-worker` | `Cadenza.Worker` | Background service / daemon |
 | `cadenza-web` | `Cadenza.Web` | Minimal API endpoint |
 | `cadenza-mcp` | `Cadenza.Mcp` | MCP server for Claude Desktop / Cursor / VS Code AI |
 
 ```bash
-dotnet new cadenza-console -n mytool -o ./mytool
+dotnet new cadenza -n mytool -o ./mytool   # alias for cadenza-console
 cd mytool
 dotnet run mytool.cs
 ```

@@ -14,13 +14,13 @@ dotnet new install Cadenza.Templates
 
 | 짧은 이름 | 변종 | 생성물 |
 | --- | --- | --- |
-| `cadenza-console` | `Cadenza` | 콘솔 스크립트 (셸, CLI, 빌드 글루) |
+| `cadenza-console` (별칭 `cadenza`) | `Cadenza` | 콘솔 스크립트 (셸, CLI, 빌드 글루) |
 | `cadenza-worker` | `Cadenza.Worker` | 백그라운드 서비스 / 데몬 |
 | `cadenza-web` | `Cadenza.Web` | Minimal API 엔드포인트 |
 | `cadenza-mcp` | `Cadenza.Mcp` | Claude Desktop / Cursor / VS Code AI용 MCP 서버 |
 
 ```bash
-dotnet new cadenza-console -n mytool -o ./mytool
+dotnet new cadenza -n mytool -o ./mytool   # cadenza-console의 별칭
 cd mytool
 dotnet run mytool.cs
 ```

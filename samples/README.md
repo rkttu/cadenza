@@ -9,8 +9,8 @@ dotnet run <file>.cs
 ```
 
 Pin the SDK version in the `#:sdk` line of each sample to the latest published
-release (the files in this folder currently pin `Cadenza@1.0.7`,
-`Cadenza.Worker@1.0.7`, `Cadenza.Web@1.0.7`). MSBuild SDK references require
+release (the files in this folder currently pin `Cadenza@1.0.9`,
+`Cadenza.Worker@1.0.9`, `Cadenza.Web@1.0.9`). MSBuild SDK references require
 an exact version — see [docs/troubleshooting.md](../docs/troubleshooting.md)
 for details.
 

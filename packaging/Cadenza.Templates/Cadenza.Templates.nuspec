@@ -6,7 +6,7 @@
     <title>Cadenza Templates</title>
     <authors>$authors$</authors>
     <owners>$authors$</owners>
-    <description>`dotnet new` project templates for the Cadenza single-file scripting SDK family. Provides starters for all four variants — console, worker, web (Minimal API), and MCP server — each producing a single `.cs` file ready to `dotnet run`.</description>
+    <description>`dotnet new` project templates for the Cadenza single-file scripting SDK family. Provides starters for all four variants — console (also aliased as just `cadenza`), worker, web (Minimal API), and MCP server — each producing a single `.cs` file ready to `dotnet run`.</description>
     <summary>Project templates for Cadenza single-file .NET scripts.</summary>
     <projectUrl>$projectUrl$</projectUrl>
     <repository type="git" url="$repositoryUrl$" commit="$commit$" />

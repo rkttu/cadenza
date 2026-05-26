@@ -21,10 +21,10 @@ Plus a companion `dotnet new` template package [`Cadenza.Templates`](https://www
 Select a variant by adding a `#:sdk` directive to the first line of your script. **The version must be exact** — MSBuild SDK references do not support wildcards like `1.*`. Replace the version below with the latest from nuget.org:
 
 ```csharp
-#:sdk Cadenza@1.0.7           // console
-#:sdk Cadenza.Worker@1.0.7    // worker
-#:sdk Cadenza.Web@1.0.7       // web
-#:sdk Cadenza.Mcp@1.0.7       // MCP server
+#:sdk Cadenza@1.0.9           // console
+#:sdk Cadenza.Worker@1.0.9    // worker
+#:sdk Cadenza.Web@1.0.9       // web
+#:sdk Cadenza.Mcp@1.0.9       // MCP server
 ```
 
 See [docs/spec.md](docs/spec.md) for the full specification (Korean) and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
@@ -35,7 +35,7 @@ Console:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.7
+#:sdk Cadenza@1.0.9
 
 foreach (var file in Glob("**/*.md"))
     WriteLine($"{file}: {ReadText(file).Length:N0} bytes");
@@ -45,7 +45,7 @@ Worker:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.7
+#:sdk Cadenza.Worker@1.0.9
 
 await Run(async (ct) =>
 {
@@ -61,7 +61,7 @@ Web:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.7
+#:sdk Cadenza.Web@1.0.9
 
 Get("/", () => "Hello from Cadenza.Web");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -73,7 +73,7 @@ MCP server:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.7
+#:sdk Cadenza.Mcp@1.0.9
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -92,13 +92,13 @@ A single template package, [`Cadenza.Templates`](https://www.nuget.org/packages/
 
 ```bash
 dotnet new install Cadenza.Templates
-dotnet new cadenza-console -n mytool   -o ./mytool      # console / CLI
+dotnet new cadenza         -n mytool   -o ./mytool      # console (alias of cadenza-console)
 dotnet new cadenza-worker  -n mydaemon -o ./mydaemon    # background service
 dotnet new cadenza-web     -n myapi    -o ./myapi       # Minimal API
 dotnet new cadenza-mcp     -n myserver -o ./myserver    # MCP server
 ```
 
-Each command produces a single `.cs` file (named after `-n`) pre-pinned to the matching SDK version with a canonical starter pattern in the body.
+The bare `cadenza` short name is an alias for the console variant — `dotnet new cadenza-console` works too. Each command produces a single `.cs` file (named after `-n`) pre-pinned to the matching SDK version with a canonical starter pattern in the body.
 
 ## Repository layout
 
@@ -122,7 +122,7 @@ samples/                   # canonical example scripts
 ## Building locally
 
 ```bash
-dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.7-local
+dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.9-local
 ```
 
 Four `.nupkg` files appear under `./artifacts`. To consume them from a script, add a `nuget.config` next to the script with a `<add key="local" value="…/artifacts" />` source.

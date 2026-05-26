@@ -10,7 +10,7 @@ Create a `heartbeat.cs` file:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.7
+#:sdk Cadenza.Worker@1.0.9
 
 await Run(async (ct) =>
 {

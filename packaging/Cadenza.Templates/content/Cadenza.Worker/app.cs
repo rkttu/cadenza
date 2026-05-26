@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.7
+#:sdk Cadenza.Worker@1.0.9
 
 // Cadenza worker script. Tier 1 bare names:
 //   Run(Func<CT, Task> work)     — start host + BackgroundService

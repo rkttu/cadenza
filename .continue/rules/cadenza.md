@@ -25,13 +25,13 @@ Skip Cadenza for multi-project solutions or libraries that ship as DLLs.
 
 ## Critical: exact version pinning
 
-**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.7`.
+**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.9`.
 
 ```csharp
-#:sdk Cadenza@1.0.7           // console
-#:sdk Cadenza.Worker@1.0.7    // worker
-#:sdk Cadenza.Web@1.0.7       // web
-#:sdk Cadenza.Mcp@1.0.7       // MCP server
+#:sdk Cadenza@1.0.9           // console
+#:sdk Cadenza.Worker@1.0.9    // worker
+#:sdk Cadenza.Web@1.0.9       // web
+#:sdk Cadenza.Mcp@1.0.9       // MCP server
 ```
 
 ## Tier 1 — bare names per variant
@@ -56,7 +56,7 @@ Skip Cadenza for multi-project solutions or libraries that ship as DLLs.
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.7
+#:sdk Cadenza@1.0.9
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main") { WriteLine($"Refusing to deploy from '{branch}'"); Env.Exit(1); }
@@ -69,7 +69,7 @@ Run("dotnet publish -c Release -o ./dist", throwOnError: true);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.7
+#:sdk Cadenza@1.0.9
 
 using System.Text.Json.Serialization;
 
@@ -85,7 +85,7 @@ partial class Ctx : JsonSerializerContext { }
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.7
+#:sdk Cadenza.Worker@1.0.9
 
 await Run(async (ct) =>
 {
@@ -101,7 +101,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.7
+#:sdk Cadenza.Web@1.0.9
 
 Get("/", () => "hello");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -117,7 +117,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.7
+#:sdk Cadenza.Mcp@1.0.9
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));

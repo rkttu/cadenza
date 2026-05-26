@@ -5,7 +5,7 @@
     "identity": "Cadenza.Templates.Console",
     "name": "Cadenza Console Script",
     "description": "A single-file Cadenza console script. Tier 1 bare names available: Run, Capture, ReadText, WriteText, Glob, TempDir, WriteLine.",
-    "shortName": "cadenza-console",
+    "shortName": [ "cadenza-console", "cadenza" ],
     "tags": {
         "language": "C#",
         "type": "project"

@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.7
+#:sdk Cadenza@1.0.9
 
 // Minimal console example: list markdown files in the working directory
 // with their byte size. Demonstrates Tier 1 bare names — Glob, ReadText,
