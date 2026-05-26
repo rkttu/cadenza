@@ -64,6 +64,7 @@ Cadenza.Mcp 서버는 Claude Desktop 설정에 다음을 추가해 등록:
 | [`agent-rag-folder.cs`](agent-rag-folder.cs) | 폴더 위 RAG 패턴 — 모델이 호출 시점을 결정하는 `search_docs` / `read_doc` 도구 |
 | [`agent-codex-backend.cs`](agent-codex-backend.cs) | Codex / Aider / Continue / Cursor용 drop-in 백엔드 — `OPENAI_BASE_URL`만 가리키게 하면 끝 |
 | [`agent-multi-llm.cs`](agent-multi-llm.cs) | `LLM_BACKEND` 환경변수로 시작 시 `Ollama` / `OpenAI` / `Anthropic` / `Azure OpenAI` 선택 |
+| [`agent-openrouter.cs`](agent-openrouter.cs) | [OpenRouter](https://openrouter.ai/)를 통한 라우팅 (API 키 하나로 수백 개 모델) — `UseChatClient` + 커스텀 OpenAI endpoint 패턴 |
 | [`agent-console-repl.cs`](agent-console-repl.cs) | `Run()` 대신 `ChatLoop()` — HTTP 서버 없는 대화형 콘솔 |
 
 `Cadenza.Agent`에 OpenAI 호환 클라이언트를 연결:

@@ -71,6 +71,7 @@ they route through `ILogger` to stderr.
 | [`agent-rag-folder.cs`](agent-rag-folder.cs) | Tiny RAG-over-a-folder pattern — `search_docs` / `read_doc` tools the model decides when to call |
 | [`agent-codex-backend.cs`](agent-codex-backend.cs) | Drop-in backend for Codex / Aider / Continue / Cursor — point `OPENAI_BASE_URL` at it |
 | [`agent-multi-llm.cs`](agent-multi-llm.cs) | Pick `Ollama` / `OpenAI` / `Anthropic` / `Azure OpenAI` at startup from `LLM_BACKEND` env var |
+| [`agent-openrouter.cs`](agent-openrouter.cs) | Route through [OpenRouter](https://openrouter.ai/) (one API key, hundreds of models) via `UseChatClient` + custom OpenAI endpoint |
 | [`agent-console-repl.cs`](agent-console-repl.cs) | `ChatLoop()` instead of `Run()` — interactive console, no HTTP server |
 
 Point any OpenAI-compatible client at a `Cadenza.Agent`:
