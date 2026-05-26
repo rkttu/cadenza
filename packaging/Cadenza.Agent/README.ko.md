@@ -10,7 +10,7 @@
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 SystemPrompt("당신은 파일 시스템에 접근할 수 있는 친절한 비서입니다.");
 
@@ -72,13 +72,43 @@ dotnet publish agent.cs -r linux-x64 -c Release
 
 ## `Run()`이 노출하는 엔드포인트
 
-- `POST /v1/chat/completions` — OpenAI Chat Completion 전체 형식; `stream=true`(SSE) 지원.
+- `POST /v1/chat/completions` — OpenAI Chat Completion 전체 형식; `stream=true`(SSE) 지원. Aider / Continue / Cursor / GitHub Copilot BYOK / sgpt 등 거의 모든 OpenAI 호환 클라이언트가 사용.
+- `POST /v1/responses` — OpenAI Responses API (SSE 스트리밍). **OpenAI Codex CLI**가 사용 — 2026년 2월부터 Chat Completion 지원이 제거되어 이 wire format만 받습니다.
 - `GET  /v1/models` — `ServedModelName`을 id로 하는 단일 항목 목록.
 - `GET  /health` — 라이브니스 프로브.
 
+### Chat Completion vs Responses — 무엇이 다른가
+
+두 엔드포인트 모두 `UseOllama` / `UseOpenAi` 등으로 구성한 동일 `IChatClient`를 사용합니다. 차이는 도구(tool) 처리 방식:
+
+| 경로 | 서버 사이드 `Tool(...)` 등록 | 클라이언트 제공 도구 | 사용 사례 |
+| --- | --- | --- | --- |
+| `/v1/chat/completions` | `UseFunctionInvocation` 미들웨어로 자동 호출. 에이전트 프로세스에서 실행. | 보통 없음 — Chat Completion 클라이언트는 서버 측 실행을 원할 때만 `tools`를 보냄. | Aider / Continue / Cursor / Copilot |
+| `/v1/responses` | **모델에 노출하지 않음.** | `function_call` 아이템으로 스트림돼 클라이언트(Codex)가 직접 실행. | Codex CLI |
+
+즉 `Tool("read_file", ...)` 등록은 Aider/Continue/Cursor에서는 동작하지만 Codex에서는 동작하지 않습니다. Codex에는 모델 어댑터 패턴으로 충분 — Codex가 `shell` / `apply_patch` / `update_plan`을 가져와서 직접 실행합니다.
+
+## Codex CLI 연결
+
+`~/.codex/config.toml` (Windows에서는 `%USERPROFILE%\.codex\config.toml`)에 추가:
+
+```toml
+model_provider = "cadenza"
+model          = "cadenza-agent"
+
+[model_providers.cadenza]
+name     = "Cadenza.Agent local"
+base_url = "http://localhost:8080/v1"
+wire_api = "responses"
+env_key  = "CADENZA_API_KEY"
+stream_idle_timeout_ms = 300000
+```
+
+그리고 `CADENZA_API_KEY`에 아무 값이나 채운 뒤 codex 실행.
+
 ## 왜 HTTP 프론트엔드인가
 
-이미 존재하는 대부분의 코딩 에이전트와 챗 UI는 OpenAI wire format을 사용합니다. 커스텀 프로토콜 대신 이를 채택하면:
+이미 존재하는 대부분의 코딩 에이전트와 챗 UI는 OpenAI wire format(Chat Completion 또는 Responses)을 사용합니다. 두 형식 모두 채택하면:
 
 - **글루 코드 없음** — Codex / Aider / Continue / Cursor / sgpt / LangChain 클라이언트 등과 그대로 통합.
 - **무료 스트리밍** — OpenAI와 동일한 SSE 형식.

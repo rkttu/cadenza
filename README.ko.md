@@ -15,18 +15,18 @@
 | `Cadenza.Worker` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Worker.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Worker) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Worker.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Worker) | 백그라운드 서비스, 데몬 |
 | `Cadenza.Web` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Web.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Web) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Web.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Web) | 웹 API, Minimal API 스크립트 |
 | `Cadenza.Mcp` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Mcp.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Mcp) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Mcp.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Mcp) | Claude / Cursor / VS Code AI 에이전트용 MCP 서버 |
-| `Cadenza.Agent` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Agent.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Agent) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Agent.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Agent) | OpenAI 호환 HTTP 프론트엔드를 가진 로컬 AI 에이전트 (Ollama / OpenAI / Anthropic / Azure OpenAI) |
+| `Cadenza.Agent` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Agent.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Agent) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Agent.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Agent) | 로컬 AI 에이전트 — 같은 `IChatClient` 백엔드(Ollama / OpenAI / Anthropic / Azure OpenAI) 위에서 OpenAI Chat Completion(Aider / Continue / Cursor / Copilot BYOK)과 OpenAI Responses API(Codex CLI) 둘 다 제공 |
 
 추가로 동반 `dotnet new` 템플릿 패키지 [`Cadenza.Templates`](https://www.nuget.org/packages/Cadenza.Templates)가 다섯 변종의 starter를 제공합니다 (아래 [새 스크립트 시작](#dotnet-new로-새-스크립트-시작) 참조).
 
 스크립트 첫 줄에 `#:sdk` 디렉티브를 두어 변종을 선택합니다. **버전은 정확히 적어야 합니다** — MSBuild SDK 참조는 `1.*` 같은 wildcard를 지원하지 않습니다. 아래 버전은 nuget.org의 최신 버전으로 교체하세요:
 
 ```csharp
-#:sdk Cadenza@1.0.12           // 콘솔
-#:sdk Cadenza.Worker@1.0.12    // 워커
-#:sdk Cadenza.Web@1.0.12       // 웹
-#:sdk Cadenza.Mcp@1.0.12       // MCP 서버
-#:sdk Cadenza.Agent@1.0.12     // AI 에이전트 (OpenAI 호환 HTTP 서버)
+#:sdk Cadenza@1.0.13           // 콘솔
+#:sdk Cadenza.Worker@1.0.13    // 워커
+#:sdk Cadenza.Web@1.0.13       // 웹
+#:sdk Cadenza.Mcp@1.0.13       // MCP 서버
+#:sdk Cadenza.Agent@1.0.13     // AI 에이전트 (OpenAI 호환 HTTP 서버)
 ```
 
 전체 명세는 [docs/spec.md](docs/spec.md) (한국어), 배포 가이드는 [docs/publishing-single-binary.ko.md](docs/publishing-single-binary.ko.md) 참고.
@@ -37,7 +37,7 @@
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.12
+#:sdk Cadenza@1.0.13
 
 foreach (var file in Glob("**/*.md"))
     WriteLine($"{file}: {ReadText(file).Length:N0} bytes");
@@ -47,7 +47,7 @@ foreach (var file in Glob("**/*.md"))
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.12
+#:sdk Cadenza.Worker@1.0.13
 
 await Run(async (ct) =>
 {
@@ -63,7 +63,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.12
+#:sdk Cadenza.Web@1.0.13
 
 Get("/", () => "Hello from Cadenza.Web");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -75,7 +75,7 @@ MCP 서버:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.12
+#:sdk Cadenza.Mcp@1.0.13
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -90,7 +90,7 @@ AI 에이전트 (OpenAI 호환 HTTP 서버 — Codex / Aider / Continue / Cursor
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 SystemPrompt("당신은 파일 시스템에 접근할 수 있는 친절한 비서입니다.");
 
@@ -143,7 +143,7 @@ samples/                   # canonical 예제 스크립트
 ## 로컬 빌드
 
 ```bash
-dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.12-local
+dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.13-local
 ```
 
 `./artifacts` 아래에 4개의 `.nupkg`가 생성됩니다. 스크립트에서 소비하려면 옆에 `nuget.config`를 두고 `<add key="local" value="…/artifacts" />` 소스를 추가합니다.

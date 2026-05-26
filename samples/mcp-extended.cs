@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.12
+#:sdk Cadenza.Mcp@1.0.13
 
 // MCP server with Tool, Resource, and Prompt primitives. Demonstrates:
 //   - Tool with external API call (reads env var for API key)

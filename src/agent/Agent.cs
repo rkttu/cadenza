@@ -22,6 +22,7 @@ public static class Agent
 {
     private static readonly List<AITool> _tools = new();
     private static IChatClient? _chatClient;
+    private static IChatClient? _rawChatClient;
     private static string _systemPrompt = "You are a helpful AI assistant.";
 
     /// <summary>Port the HTTP server binds to. Default 8080.</summary>
@@ -35,6 +36,14 @@ public static class Agent
 
     internal static IChatClient ChatClient =>
         _chatClient ?? throw new InvalidOperationException(
+            "Configure an LLM with UseOllama / UseOpenAi / UseAnthropic / UseAzureOpenAi / UseChatClient before starting the agent.");
+
+    /// <summary>The unwrapped <see cref="IChatClient"/> — without the
+    /// function-invocation middleware. Used by the Responses-API path so
+    /// client-supplied tools (e.g. Codex's <c>shell</c> / <c>apply_patch</c>)
+    /// stream back to the client instead of being auto-invoked here.</summary>
+    internal static IChatClient RawChatClient =>
+        _rawChatClient ?? throw new InvalidOperationException(
             "Configure an LLM with UseOllama / UseOpenAi / UseAnthropic / UseAzureOpenAi / UseChatClient before starting the agent.");
 
     internal static IList<AITool> Tools => _tools;
@@ -61,8 +70,11 @@ public static class Agent
     /// supplied client with function-invocation middleware so registered
     /// tools are auto-called when the model requests them.
     /// </summary>
-    public static void UseChatClient(IChatClient client) =>
-        _chatClient = new ChatClientBuilder(client).UseFunctionInvocation().Build();
+    public static void UseChatClient(IChatClient client)
+    {
+        _rawChatClient = client;
+        _chatClient    = new ChatClientBuilder(client).UseFunctionInvocation().Build();
+    }
 
     /// <summary>
     /// Use a local <a href="https://ollama.com">Ollama</a> daemon (default

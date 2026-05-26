@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.12
+#:sdk Cadenza.Mcp@1.0.13
 
 // Minimal MCP server exposing file read / glob tools to AI clients.
 // Register with Claude Desktop / Cursor / VS Code MCP by pointing the

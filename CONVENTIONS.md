@@ -27,14 +27,14 @@ Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anythi
 
 ## Critical: exact version pinning
 
-**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.12`.
+**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.13`.
 
 ```csharp
-#:sdk Cadenza@1.0.12           // console
-#:sdk Cadenza.Worker@1.0.12    // worker
-#:sdk Cadenza.Web@1.0.12       // web
-#:sdk Cadenza.Mcp@1.0.12       // MCP server
-#:sdk Cadenza.Agent@1.0.12     // AI agent (OpenAI-compatible HTTP)
+#:sdk Cadenza@1.0.13           // console
+#:sdk Cadenza.Worker@1.0.13    // worker
+#:sdk Cadenza.Web@1.0.13       // web
+#:sdk Cadenza.Mcp@1.0.13       // MCP server
+#:sdk Cadenza.Agent@1.0.13     // AI agent (OpenAI-compatible HTTP)
 ```
 
 ## Tier 1 — bare names per variant
@@ -43,7 +43,7 @@ Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anythi
 - **`Cadenza.Worker`**: `Run(Func<CT, Task>)`, `Config<T>(key)`. `Log.Info/Warn/Error/Debug`.
 - **`Cadenza.Web`**: `Get/Post/Put/Delete/Map(path, handler)`, `Run()`. `Web.App` / `Web.Services` for raw access.
 - **`Cadenza.Mcp`**: `Tool(name, desc, handler)`, `Resource(uri, name, handler)`, `Prompt(name, desc, handler)`, `Run()`. `Log.*` → stderr (never use `WriteLine` here).
-- **`Cadenza.Agent`**: `Tool(name, desc, handler)`, `SystemPrompt(text)`, `UseOllama/UseOpenAi/UseAnthropic/UseAzureOpenAi/UseChatClient`, `Run()` (OpenAI Chat Completion HTTP on `localhost:8080`), `ChatLoop()` (REPL), `Reply(prompt)` (one-shot). `Port`, `HostName`, `ServedModelName` for config.
+- **`Cadenza.Agent`**: `Tool(name, desc, handler)`, `SystemPrompt(text)`, `UseOllama/UseOpenAi/UseAnthropic/UseAzureOpenAi/UseChatClient`, `Run()` (HTTP server on `localhost:8080` — serves `POST /v1/chat/completions` AND `POST /v1/responses`), `ChatLoop()` (REPL), `Reply(prompt)` (one-shot). Server-side `Tool(...)` auto-invokes on Chat Completion only; Codex (Responses path) brings its own toolset.
 
 ## Gotchas
 
@@ -60,7 +60,7 @@ Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anythi
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.12
+#:sdk Cadenza@1.0.13
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main") { WriteLine($"Refusing to deploy from '{branch}'"); Env.Exit(1); }
@@ -73,7 +73,7 @@ Run("dotnet publish -c Release -o ./dist", throwOnError: true);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.12
+#:sdk Cadenza@1.0.13
 
 using System.Text.Json.Serialization;
 
@@ -89,7 +89,7 @@ partial class Ctx : JsonSerializerContext { }
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.12
+#:sdk Cadenza.Worker@1.0.13
 
 await Run(async (ct) =>
 {
@@ -105,7 +105,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.12
+#:sdk Cadenza.Web@1.0.13
 
 Get("/", () => "hello");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -121,7 +121,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.12
+#:sdk Cadenza.Mcp@1.0.13
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -136,7 +136,7 @@ await Run();
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 SystemPrompt("You are a coding assistant. Ground answers in real files.");
 

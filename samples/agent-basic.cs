@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 // Minimal AI agent. Boots an OpenAI-compatible HTTP server on
 // http://localhost:8080 with two callable tools and a local Ollama backend.

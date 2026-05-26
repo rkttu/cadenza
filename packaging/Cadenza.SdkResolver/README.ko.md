@@ -10,13 +10,13 @@ Cadenza 단일 파일 스크립팅 SDK 가족을 위한 **옵션 / opt-in MSBuil
 #:sdk Cadenza@*             // wildcard 별칭
 ```
 
-Cadenza의 canonical workflow는 이 패키지를 **요구하지 않습니다** — 스크립트에 정확한 버전을 핀(`#:sdk Cadenza@1.0.12`)하면 추가 설치 없이 `dotnet run app.cs`가 그대로 동작합니다. 이 resolver는 재현성이 중요하지 않은 시나리오(빠른 실험, REPL 류 일회성 코드)에서 버전 생략 / `@latest` 단축형을 굳이 쓰고 싶을 때만 설치하세요.
+Cadenza의 canonical workflow는 이 패키지를 **요구하지 않습니다** — 스크립트에 정확한 버전을 핀(`#:sdk Cadenza@1.0.13`)하면 추가 설치 없이 `dotnet run app.cs`가 그대로 동작합니다. 이 resolver는 재현성이 중요하지 않은 시나리오(빠른 실험, REPL 류 일회성 코드)에서 버전 생략 / `@latest` 단축형을 굳이 쓰고 싶을 때만 설치하세요.
 
 운영 스크립트는 어차피 정확한 버전을 핀하는 것이 좋습니다. 더 큰 그림은 [프로젝트 저장소](https://github.com/rkttu/cadenza) 참고.
 
 ## MSBuild 내 역할
 
-MSBuild는 우선순위 순서로 SDK resolver 체인을 호출합니다. 번들된 NuGet resolver는 버전이 명시된 경우에만 활성화됩니다. 이 resolver는 priority 4500 (NuGet의 5500보다 먼저) 으로 동작하며, `Cadenza*` SDK 참조 중 버전이 빈/`latest`/`*`인 경우를 인식해 `https://api.nuget.org/v3-flatcontainer/<id>/index.json`에서 가장 높은 안정 SemVer를 조회 → 매칭되는 nupkg를 `~/.nuget/packages/`에 받아내고 → 그 SDK 디렉터리 경로를 반환합니다. 정확한 버전(`Cadenza@1.0.12` 등)에는 `null`을 반환해 NuGet resolver에 위임.
+MSBuild는 우선순위 순서로 SDK resolver 체인을 호출합니다. 번들된 NuGet resolver는 버전이 명시된 경우에만 활성화됩니다. 이 resolver는 priority 4500 (NuGet의 5500보다 먼저) 으로 동작하며, `Cadenza*` SDK 참조 중 버전이 빈/`latest`/`*`인 경우를 인식해 `https://api.nuget.org/v3-flatcontainer/<id>/index.json`에서 가장 높은 안정 SemVer를 조회 → 매칭되는 nupkg를 `~/.nuget/packages/`에 받아내고 → 그 SDK 디렉터리 경로를 반환합니다. 정확한 버전(`Cadenza@1.0.13` 등)에는 `null`을 반환해 NuGet resolver에 위임.
 
 ## 설치
 

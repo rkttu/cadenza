@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.12
+#:sdk Cadenza.Worker@1.0.13
 
 // Minimal worker. Demonstrates:
 //   - Worker.Run hosts a BackgroundService and respects Ctrl+C / SIGTERM

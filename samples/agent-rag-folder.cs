@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 // Tiny RAG-over-a-folder agent. The LLM gets `search_docs` and `read_doc`
 // tools that walk a documents directory (override with DOCS_DIR env var)

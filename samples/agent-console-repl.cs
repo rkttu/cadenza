@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 // Console REPL — no HTTP server. Useful for quick local testing of a tool
 // configuration before exposing it to editor integrations. Same `Tool(...)`

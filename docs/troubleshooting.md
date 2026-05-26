@@ -17,11 +17,11 @@ Cause: **MSBuild SDK references do not support floating / wildcard versions** li
 Write a specific SemVer string in your script:
 
 ```csharp
-#:sdk Cadenza@1.0.12
-#:sdk Cadenza.Worker@1.0.12
-#:sdk Cadenza.Web@1.0.12
-#:sdk Cadenza.Mcp@1.0.12
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza@1.0.13
+#:sdk Cadenza.Worker@1.0.13
+#:sdk Cadenza.Web@1.0.13
+#:sdk Cadenza.Mcp@1.0.13
+#:sdk Cadenza.Agent@1.0.13
 ```
 
 Bump the version manually when a new release ships. The latest is on [nuget.org/packages/Cadenza](https://www.nuget.org/packages/Cadenza).
@@ -33,11 +33,11 @@ Drop a `global.json` next to (or above) your script:
 ```json
 {
   "msbuild-sdks": {
-    "Cadenza": "1.0.12",
-    "Cadenza.Worker": "1.0.12",
-    "Cadenza.Web": "1.0.12",
-    "Cadenza.Mcp": "1.0.12",
-    "Cadenza.Agent": "1.0.12"
+    "Cadenza": "1.0.13",
+    "Cadenza.Worker": "1.0.13",
+    "Cadenza.Web": "1.0.13",
+    "Cadenza.Mcp": "1.0.13",
+    "Cadenza.Agent": "1.0.13"
   }
 }
 ```

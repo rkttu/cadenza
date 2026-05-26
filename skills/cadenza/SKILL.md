@@ -28,14 +28,14 @@ Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anythi
 **MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Check nuget.org for the latest, then write the exact version on the `#:sdk` line:
 
 ```csharp
-#:sdk Cadenza@1.0.12           // console
-#:sdk Cadenza.Worker@1.0.12    // worker
-#:sdk Cadenza.Web@1.0.12       // web
-#:sdk Cadenza.Mcp@1.0.12       // MCP server
-#:sdk Cadenza.Agent@1.0.12     // AI agent (OpenAI-compatible HTTP)
+#:sdk Cadenza@1.0.13           // console
+#:sdk Cadenza.Worker@1.0.13    // worker
+#:sdk Cadenza.Web@1.0.13       // web
+#:sdk Cadenza.Mcp@1.0.13       // MCP server
+#:sdk Cadenza.Agent@1.0.13     // AI agent (OpenAI-compatible HTTP)
 ```
 
-Latest versions (as of this skill update): all five SDKs at `1.0.12`.
+Latest versions (as of this skill update): all five SDKs at `1.0.13`.
 
 ## Tier 1 — bare names per variant (no namespace prefix needed)
 
@@ -94,7 +94,7 @@ Plus `Log.Info/Warn/Error/Debug` routed to **stderr** (CRITICAL — see gotcha b
 | `UseAnthropic` | `void UseAnthropic(string model, string? apiKey = null)` | Use Anthropic via its OpenAI-compatible endpoint (`ANTHROPIC_API_KEY` fallback). |
 | `UseAzureOpenAi` | `void UseAzureOpenAi(string endpoint, string deployment, string? apiKey = null)` | Use Azure OpenAI (`AZURE_OPENAI_API_KEY` fallback). |
 | `UseChatClient` | `void UseChatClient(IChatClient client)` | Plug in any custom `IChatClient` — `UseFunctionInvocation()` is wired automatically. |
-| `Run` | `Task Run()` | Start the OpenAI-compatible HTTP server (default `localhost:8080`). Exposes `POST /v1/chat/completions` (SSE-capable), `GET /v1/models`, `GET /health`. |
+| `Run` | `Task Run()` | Start the OpenAI-compatible HTTP server (default `localhost:8080`). Exposes `POST /v1/chat/completions` (Aider / Continue / Cursor / Copilot BYOK), `POST /v1/responses` (Codex CLI — required since Feb 2026), `GET /v1/models`, `GET /health`. |
 | `ChatLoop` | `Task ChatLoop()` | Interactive console REPL — no HTTP server. |
 | `Reply` | `Task<string> Reply(string prompt)` | One-shot non-interactive call. |
 | `Port`, `HostName`, `ServedModelName` | properties | Configure the HTTP surface before calling `Run()`. |
@@ -114,7 +114,7 @@ Plus `Log.Info/Warn/Error/Debug` routed to **stderr** (CRITICAL — see gotcha b
 
 6. **The synthetic project's working directory is the directory holding the `.cs` file.** Glob patterns and relative paths resolve from there.
 
-7. **`Cadenza.Agent` HTTP server speaks pure OpenAI Chat Completion** at `POST /v1/chat/completions`. Point any OpenAI client at it with `OPENAI_BASE_URL=http://localhost:8080/v1` and any non-empty `OPENAI_API_KEY`. The `ServedModelName` (default `cadenza-agent`) is what shows up in editor model pickers — change it to e.g. `cadenza-codex` to brand the backend.
+7. **`Cadenza.Agent` serves two wire formats over the same backend.** `POST /v1/chat/completions` for Aider / Continue / Cursor / Copilot BYOK; `POST /v1/responses` for OpenAI Codex CLI (Codex removed Chat Completion support in Feb 2026 and now requires Responses). Server-side `Tool(...)` registrations are auto-invoked on the Chat path but NOT exposed on the Responses path — Codex sends its own toolset (`shell`, `apply_patch`, …) and runs them locally. So Cadenza-registered tools only show up for Chat-Completion clients. For Codex, treat `Cadenza.Agent` as a model adapter (pick the LLM, let Codex bring the tools).
 
 ## Canonical patterns
 
@@ -122,7 +122,7 @@ Plus `Log.Info/Warn/Error/Debug` routed to **stderr** (CRITICAL — see gotcha b
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.12
+#:sdk Cadenza@1.0.13
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main") { WriteLine($"Refusing to deploy from '{branch}'"); Env.Exit(1); }
@@ -135,7 +135,7 @@ Run("dotnet publish -c Release -o ./dist", throwOnError: true);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.12
+#:sdk Cadenza@1.0.13
 
 using System.Text.Json.Serialization;
 
@@ -154,7 +154,7 @@ partial class Ctx : JsonSerializerContext { }
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.12
+#:sdk Cadenza.Worker@1.0.13
 
 await Run(async (ct) =>
 {
@@ -170,7 +170,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.12
+#:sdk Cadenza.Web@1.0.13
 
 Get("/", () => "hello");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -186,7 +186,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.12
+#:sdk Cadenza.Mcp@1.0.13
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -210,13 +210,13 @@ Register with the client:
 }
 ```
 
-### AI agent backing Codex / Aider / Continue / Cursor
+### AI agent for Chat Completion clients (Aider / Continue / Cursor / Copilot BYOK)
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
-ServedModelName = "cadenza-codex";   // shows up in the editor's model picker
+ServedModelName = "cadenza-coder";
 
 SystemPrompt("You are a coding assistant. Ground answers in real files.");
 
@@ -226,9 +226,9 @@ Tool("read_file", "Read a UTF-8 text file from the working directory",
 Tool("list_files", "List files matching a glob pattern (e.g., src/**/*.cs)",
     (string pattern) => Glob(pattern).ToArray());
 
-UseOllama("qwen2.5-coder:7b");   // or UseOpenAi("gpt-4o-mini") / UseAnthropic("claude-3-5-sonnet-latest")
+UseOllama("qwen2.5-coder:7b");   // or UseOpenAi / UseAnthropic / UseAzureOpenAi
 
-await Run();   // serves OpenAI Chat Completion on http://localhost:8080
+await Run();
 ```
 
 Point the editor at it:
@@ -236,7 +236,43 @@ Point the editor at it:
 ```bash
 export OPENAI_BASE_URL=http://localhost:8080/v1
 export OPENAI_API_KEY=any-non-empty-string
-codex      # or aider, continue, cursor, sgpt, …
+aider      # or continue, cursor, sgpt, …
+```
+
+### AI agent for Codex CLI (Responses API)
+
+For Codex, drop tool registrations — Codex brings its own (`shell`, `apply_patch`, …). Cadenza.Agent acts as a pure model adapter:
+
+```csharp
+#!/usr/bin/env dotnet run
+#:sdk Cadenza.Agent@1.0.13
+
+ServedModelName = "cadenza-codex";
+
+UseOllama("qwen2.5-coder:7b");
+
+await Run();
+```
+
+Configure Codex at `~/.codex/config.toml`:
+
+```toml
+model_provider = "cadenza"
+model          = "cadenza-codex"
+
+[model_providers.cadenza]
+name     = "Cadenza.Agent local"
+base_url = "http://localhost:8080/v1"
+wire_api = "responses"
+env_key  = "CADENZA_API_KEY"
+stream_idle_timeout_ms = 300000
+```
+
+Then:
+
+```bash
+export CADENZA_API_KEY=any-non-empty-string
+codex
 ```
 
 ## Deployment

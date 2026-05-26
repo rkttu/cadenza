@@ -15,18 +15,18 @@ A single-file scripting SDK family for .NET 10+ file-based apps, distributed as 
 | `Cadenza.Worker` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Worker.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Worker) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Worker.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Worker) | Background services, daemons |
 | `Cadenza.Web` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Web.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Web) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Web.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Web) | Web APIs, Minimal API scripts |
 | `Cadenza.Mcp` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Mcp.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Mcp) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Mcp.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Mcp) | MCP servers for Claude / Cursor / VS Code AI agents |
-| `Cadenza.Agent` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Agent.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Agent) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Agent.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Agent) | Local AI agents with OpenAI-compatible HTTP frontend (Ollama / OpenAI / Anthropic / Azure OpenAI) |
+| `Cadenza.Agent` | [![NuGet](https://img.shields.io/nuget/vpre/Cadenza.Agent.svg?label=nuget)](https://www.nuget.org/packages/Cadenza.Agent) [![Downloads](https://img.shields.io/nuget/dt/Cadenza.Agent.svg?label=downloads)](https://www.nuget.org/packages/Cadenza.Agent) | Local AI agents — serves **both** OpenAI Chat Completion (Aider / Continue / Cursor / Copilot BYOK) and OpenAI Responses API (Codex CLI) over the same `IChatClient` backend (Ollama / OpenAI / Anthropic / Azure OpenAI) |
 
 Plus a companion `dotnet new` template package [`Cadenza.Templates`](https://www.nuget.org/packages/Cadenza.Templates) that ships starters for all five variants (see [Bootstrap a new script](#bootstrap-a-new-script-with-dotnet-new) below).
 
 Select a variant by adding a `#:sdk` directive to the first line of your script. **The version must be exact** — MSBuild SDK references do not support wildcards like `1.*`. Replace the version below with the latest from nuget.org:
 
 ```csharp
-#:sdk Cadenza@1.0.12           // console
-#:sdk Cadenza.Worker@1.0.12    // worker
-#:sdk Cadenza.Web@1.0.12       // web
-#:sdk Cadenza.Mcp@1.0.12       // MCP server
-#:sdk Cadenza.Agent@1.0.12     // AI agent (OpenAI-compatible HTTP server)
+#:sdk Cadenza@1.0.13           // console
+#:sdk Cadenza.Worker@1.0.13    // worker
+#:sdk Cadenza.Web@1.0.13       // web
+#:sdk Cadenza.Mcp@1.0.13       // MCP server
+#:sdk Cadenza.Agent@1.0.13     // AI agent (OpenAI-compatible HTTP server)
 ```
 
 See [docs/spec.md](docs/spec.md) for the full specification (Korean) and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
@@ -37,7 +37,7 @@ Console:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.12
+#:sdk Cadenza@1.0.13
 
 foreach (var file in Glob("**/*.md"))
     WriteLine($"{file}: {ReadText(file).Length:N0} bytes");
@@ -47,7 +47,7 @@ Worker:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.12
+#:sdk Cadenza.Worker@1.0.13
 
 await Run(async (ct) =>
 {
@@ -63,7 +63,7 @@ Web:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.12
+#:sdk Cadenza.Web@1.0.13
 
 Get("/", () => "Hello from Cadenza.Web");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -75,7 +75,7 @@ MCP server:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.12
+#:sdk Cadenza.Mcp@1.0.13
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -90,7 +90,7 @@ AI agent (OpenAI-compatible HTTP server — Codex / Aider / Continue / Cursor ta
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 SystemPrompt("You are a helpful assistant with filesystem access.");
 
@@ -143,7 +143,7 @@ samples/                   # canonical example scripts
 ## Building locally
 
 ```bash
-dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.12-local
+dotnet pack build/Cadenza.Packaging.proj -c Release -o ./artifacts -p:Version=1.0.13-local
 ```
 
 Four `.nupkg` files appear under `./artifacts`. To consume them from a script, add a `nuget.config` next to the script with a `<add key="local" value="…/artifacts" />` source.

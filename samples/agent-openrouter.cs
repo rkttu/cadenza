@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 // OpenRouter backend — one API, hundreds of models (OpenAI, Anthropic, Google,
 // Meta, Mistral, …) plus per-request fallback. OpenRouter speaks the OpenAI

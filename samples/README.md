@@ -9,9 +9,9 @@ dotnet run <file>.cs
 ```
 
 Pin the SDK version in the `#:sdk` line of each sample to the latest published
-release (the files in this folder currently pin `Cadenza@1.0.12`,
-`Cadenza.Worker@1.0.12`, `Cadenza.Web@1.0.12`, `Cadenza.Mcp@1.0.12`,
-`Cadenza.Agent@1.0.12`). MSBuild SDK references require an exact version —
+release (the files in this folder currently pin `Cadenza@1.0.13`,
+`Cadenza.Worker@1.0.13`, `Cadenza.Web@1.0.13`, `Cadenza.Mcp@1.0.13`,
+`Cadenza.Agent@1.0.13`). MSBuild SDK references require an exact version —
 see [docs/troubleshooting.md](../docs/troubleshooting.md) for details.
 
 ## Console scripts (`#:sdk Cadenza@...`)

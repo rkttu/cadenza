@@ -10,7 +10,7 @@ Create an `agent.cs` file:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.12
+#:sdk Cadenza.Agent@1.0.13
 
 SystemPrompt("You are a helpful assistant with filesystem access.");
 
@@ -73,13 +73,43 @@ dotnet publish agent.cs -r linux-x64 -c Release
 
 ## Endpoints exposed by `Run()`
 
-- `POST /v1/chat/completions` — full OpenAI Chat Completion shape; supports `stream=true` (SSE).
+- `POST /v1/chat/completions` — full OpenAI Chat Completion shape; supports `stream=true` (SSE). Used by Aider, Continue, Cursor, GitHub Copilot BYOK, sgpt, and almost every other OpenAI-compatible client.
+- `POST /v1/responses` — OpenAI Responses API (SSE streaming). Used by **OpenAI Codex CLI**, which removed Chat Completion support in Feb 2026 and now requires this wire format exclusively.
 - `GET  /v1/models` — single-entry list with `ServedModelName` as the id.
 - `GET  /health` — liveness probe.
 
+### Chat Completion vs Responses — what's different
+
+Both endpoints are backed by the same `IChatClient` you configured with `UseOllama` / `UseOpenAi` / etc. They differ in how tools are handled:
+
+| Path | Server-side `Tool(...)` registrations | Client-supplied tools | Use case |
+| --- | --- | --- | --- |
+| `/v1/chat/completions` | Auto-invoked via `UseFunctionInvocation` middleware. Tools you register execute in the agent process. | Not expected — Chat Completion clients pass `tools` only when they want server-side execution. | Aider / Continue / Cursor / Copilot |
+| `/v1/responses` | **Not exposed** to the model. | Streamed back as `function_call` items — the client (e.g. Codex) owns execution. | Codex CLI |
+
+So if you register `Tool("read_file", ...)`, it works for Aider/Continue/Cursor but not for Codex. For Codex, the model adapter pattern is enough — Codex brings `shell` / `apply_patch` / `update_plan` and executes them itself.
+
+## Connecting Codex CLI
+
+Drop this into `~/.codex/config.toml` (or `%USERPROFILE%\.codex\config.toml` on Windows):
+
+```toml
+model_provider = "cadenza"
+model          = "cadenza-agent"
+
+[model_providers.cadenza]
+name     = "Cadenza.Agent local"
+base_url = "http://localhost:8080/v1"
+wire_api = "responses"
+env_key  = "CADENZA_API_KEY"
+stream_idle_timeout_ms = 300000
+```
+
+Then set any non-empty value for `CADENZA_API_KEY` and run Codex.
+
 ## Why an HTTP frontend?
 
-Most existing coding agents and chat UIs already speak the OpenAI wire format. Adopting it instead of a bespoke protocol means:
+Most existing coding agents and chat UIs already speak an OpenAI wire format. Adopting both Chat Completion and Responses instead of a bespoke protocol means:
 
 - **Zero glue code** to integrate with Codex / Aider / Continue / Cursor / sgpt / any LangChain client.
 - **Free streaming** via SSE — same shape OpenAI uses.

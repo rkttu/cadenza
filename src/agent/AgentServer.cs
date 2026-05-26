@@ -74,6 +74,8 @@ internal static class AgentServer
                 await HandleSingleAsync(messages, options, response, ct).ConfigureAwait(false);
         });
 
+        app.MapPost("/v1/responses", AgentResponsesEndpoint.HandleAsync);
+
         await app.RunAsync().ConfigureAwait(false);
     }
 
