@@ -1,4 +1,0 @@
-[submodule "wiki"]
-	path = wiki
-	url = https://github.com/rkttu/cadenza.wiki.git
-	branch = master
