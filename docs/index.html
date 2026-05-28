@@ -360,6 +360,25 @@
   /* keep inline data-ko spans behaving like their siblings */
   html[lang="ko"] [data-ko].block { display: block; }
 
+  /* Korean has no real italic and Cormorant Garamond has no Hangul glyphs —
+     the EN italic-serif accents fall back to a synthesized italic that
+     distorts and oversizes the text. Switch KO accents back to the body
+     sans-serif at the surrounding weight; the gradient / accent-soft
+     color does the emphasis work on its own. */
+  html[lang="ko"] h1.headline .accent,
+  html[lang="ko"] section h2 em {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: inherit;
+  }
+  /* Tighten the KO hero a touch — Hangul characters carry more horizontal
+     mass than Latin at the same point size, so a slightly smaller cap and
+     wider max-width keeps both lines on a single line each. */
+  html[lang="ko"] h1.headline {
+    font-size: clamp(32px, 4.6vw, 52px);
+    max-width: 26ch;
+  }
+
   ::selection { background: rgba(212,175,110,0.4); color: #1c1408; }
 </style>
 </head>
