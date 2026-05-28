@@ -26,6 +26,28 @@ public static class Env
     /// <summary>Current working directory.</summary>
     public static string Cwd => Environment.CurrentDirectory;
 
+    /// <summary>
+    /// Absolute path to the entry-point <c>.cs</c> script when the program is
+    /// launched via <c>dotnet run app.cs</c>. The .NET 10+ file-based program
+    /// CLI injects this through a synthesized <c>RuntimeHostConfigurationOption</c>
+    /// item that surfaces via <see cref="AppContext.GetData(string)"/>.
+    /// </summary>
+    /// <remarks>
+    /// Returns <c>null</c> when the value is not available — notably after
+    /// <c>dotnet publish</c>, where the CLI strips the directive (the binary
+    /// is no longer "the script" so a path back to the source would lie).
+    /// Reach for <see cref="Cwd"/> or <see cref="System.Reflection.Assembly.GetEntryAssembly"/>
+    /// in those cases.
+    /// </remarks>
+    public static string? ScriptPath => AppContext.GetData("EntryPointFilePath") as string;
+
+    /// <summary>
+    /// Directory containing the entry-point <c>.cs</c> script. Same lifetime
+    /// caveats as <see cref="ScriptPath"/> — <c>null</c> outside <c>dotnet run</c>
+    /// / <c>dotnet build</c>.
+    /// </summary>
+    public static string? ScriptDirectory => AppContext.GetData("EntryPointFileDirectoryPath") as string;
+
     /// <summary>Terminates the current process with the given exit code. Does not return.</summary>
     public static void Exit(int code) => Environment.Exit(code);
 

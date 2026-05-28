@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.14
+#:sdk Cadenza.Web@1.0.15
 
 // Minimal API in a single file. Demonstrates Tier 1 bare names — Get, Post,
 // Run — plus Minimal API record binding for JSON request/response bodies.

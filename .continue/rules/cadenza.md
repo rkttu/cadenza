@@ -26,14 +26,14 @@ Skip Cadenza for multi-project solutions or libraries that ship as DLLs.
 
 ## Critical: exact version pinning
 
-**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.14`.
+**MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Latest: `1.0.15`.
 
 ```csharp
-#:sdk Cadenza@1.0.14           // console
-#:sdk Cadenza.Worker@1.0.14    // worker
-#:sdk Cadenza.Web@1.0.14       // web
-#:sdk Cadenza.Mcp@1.0.14       // MCP server
-#:sdk Cadenza.Agent@1.0.14     // AI agent (OpenAI-compatible HTTP)
+#:sdk Cadenza@1.0.15           // console
+#:sdk Cadenza.Worker@1.0.15    // worker
+#:sdk Cadenza.Web@1.0.15       // web
+#:sdk Cadenza.Mcp@1.0.15       // MCP server
+#:sdk Cadenza.Agent@1.0.15     // AI agent (OpenAI-compatible HTTP)
 ```
 
 ## Tier 1 — bare names per variant
@@ -59,7 +59,7 @@ Skip Cadenza for multi-project solutions or libraries that ship as DLLs.
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.14
+#:sdk Cadenza@1.0.15
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main") { WriteLine($"Refusing to deploy from '{branch}'"); Env.Exit(1); }
@@ -72,7 +72,7 @@ Run("dotnet publish -c Release -o ./dist", throwOnError: true);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.14
+#:sdk Cadenza@1.0.15
 
 using System.Text.Json.Serialization;
 
@@ -88,7 +88,7 @@ partial class Ctx : JsonSerializerContext { }
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.14
+#:sdk Cadenza.Worker@1.0.15
 
 await Run(async (ct) =>
 {
@@ -104,7 +104,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.14
+#:sdk Cadenza.Web@1.0.15
 
 Get("/", () => "hello");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -120,7 +120,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.14
+#:sdk Cadenza.Mcp@1.0.15
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -135,7 +135,7 @@ await Run();
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.14
+#:sdk Cadenza.Agent@1.0.15
 
 SystemPrompt("You are a coding assistant.");
 

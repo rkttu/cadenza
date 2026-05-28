@@ -16,7 +16,7 @@ namespace Cadenza.SdkResolver;
 /// version, ensuring the package is in the user's global packages folder,
 /// and returning the path to the unpacked <c>Sdk/</c> directory.
 ///
-/// Exact versions (e.g. <c>Cadenza@1.0.14</c>) are not handled here —
+/// Exact versions (e.g. <c>Cadenza@1.0.15</c>) are not handled here —
 /// returning <c>null</c> defers to the bundled NuGet SDK resolver.
 /// </summary>
 internal sealed record VersionIndex([property: JsonPropertyName("versions")] string[]? Versions);

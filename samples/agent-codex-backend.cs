@@ -1,11 +1,11 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.14
+#:sdk Cadenza.Agent@1.0.15
 
 // Codex CLI backend, Ollama edition.
 //
 // As of Feb 2026, Codex CLI speaks the OpenAI Responses API exclusively —
 // Chat Completion support was removed (codex-rs: WireApi enum has only
-// `Responses`). Cadenza.Agent ≥ 1.0.14 serves `POST /v1/responses` so
+// `Responses`). Cadenza.Agent ≥ 1.0.15 serves `POST /v1/responses` so
 // Codex can connect directly without a proxy.
 //
 // This sample auto-generates a sample-local Codex home directory so it

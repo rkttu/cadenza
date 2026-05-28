@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.14
+#:sdk Cadenza.Agent@1.0.15
 
 // Pick the LLM backend at startup based on an env var. Useful for switching
 // between local Ollama (dev) and a hosted model (CI / prod) without changing

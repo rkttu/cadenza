@@ -28,14 +28,14 @@ Skip Cadenza for multi-project solutions, libraries that ship as DLLs, or anythi
 **MSBuild SDK references do NOT support wildcards (`1.*`).** Always pin an exact SemVer version. Check nuget.org for the latest, then write the exact version on the `#:sdk` line:
 
 ```csharp
-#:sdk Cadenza@1.0.14           // console
-#:sdk Cadenza.Worker@1.0.14    // worker
-#:sdk Cadenza.Web@1.0.14       // web
-#:sdk Cadenza.Mcp@1.0.14       // MCP server
-#:sdk Cadenza.Agent@1.0.14     // AI agent (OpenAI-compatible HTTP)
+#:sdk Cadenza@1.0.15           // console
+#:sdk Cadenza.Worker@1.0.15    // worker
+#:sdk Cadenza.Web@1.0.15       // web
+#:sdk Cadenza.Mcp@1.0.15       // MCP server
+#:sdk Cadenza.Agent@1.0.15     // AI agent (OpenAI-compatible HTTP)
 ```
 
-Latest versions (as of this skill update): all five SDKs at `1.0.14`.
+Latest versions (as of this skill update): all five SDKs at `1.0.15`.
 
 ## Tier 1 — bare names per variant (no namespace prefix needed)
 
@@ -112,9 +112,11 @@ Plus `Log.Info/Warn/Error/Debug` routed to **stderr** (CRITICAL — see gotcha b
 
 5. **`Prompt.*` in CI:** set `CADENZA_PROMPT_<NAME>` env var (NAME = the question text uppercased, non-alphanumerics → `_`). `Prompt.Password` throws in CI without such an env var (no safe default).
 
-6. **The synthetic project's working directory is the directory holding the `.cs` file.** Glob patterns and relative paths resolve from there.
+6. **The synthetic project's working directory is the directory holding the `.cs` file.** Glob patterns and relative paths resolve from there. To get the script's own absolute path inside the program, use `Env.ScriptPath` / `Env.ScriptDirectory` — these read the `EntryPointFilePath` / `EntryPointFileDirectoryPath` values that the .NET 10+ file-based CLI injects via `AppContext`. Both return `null` after `dotnet publish`, since the CLI strips those host-config entries from the published binary.
 
 7. **`Cadenza.Agent` serves two wire formats over the same backend.** `POST /v1/chat/completions` for Aider / Continue / Cursor / Copilot BYOK; `POST /v1/responses` for OpenAI Codex CLI (Codex removed Chat Completion support in Feb 2026 and now requires Responses). Server-side `Tool(...)` registrations are auto-invoked on the Chat path but NOT exposed on the Responses path — Codex sends its own toolset (`shell`, `apply_patch`, …) and runs them locally. So Cadenza-registered tools only show up for Chat-Completion clients. For Codex, treat `Cadenza.Agent` as a model adapter (pick the LLM, let Codex bring the tools).
+
+8. **Transitive `#:include` is on by default.** The vanilla .NET 10 file-based CLI ignores `#:` directives inside `#:include`d files unless `ExperimentalFileBasedProgramEnableTransitiveDirectives=true` is set; every Cadenza SDK defaults this property to true in its `Sdk.props`, so a `#:package` / `#:property` / nested `#:include` inside a helper `.cs` file just works. Once the .NET SDK ships transitive directives unconditionally (PR dotnet/sdk#54012) we'll drop the property and bump the major.
 
 ## Canonical patterns
 
@@ -122,7 +124,7 @@ Plus `Log.Info/Warn/Error/Debug` routed to **stderr** (CRITICAL — see gotcha b
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.14
+#:sdk Cadenza@1.0.15
 
 var branch = Capture("git rev-parse --abbrev-ref HEAD").Trim();
 if (branch != "main") { WriteLine($"Refusing to deploy from '{branch}'"); Env.Exit(1); }
@@ -135,7 +137,7 @@ Run("dotnet publish -c Release -o ./dist", throwOnError: true);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.14
+#:sdk Cadenza@1.0.15
 
 using System.Text.Json.Serialization;
 
@@ -154,7 +156,7 @@ partial class Ctx : JsonSerializerContext { }
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Worker@1.0.14
+#:sdk Cadenza.Worker@1.0.15
 
 await Run(async (ct) =>
 {
@@ -170,7 +172,7 @@ await Run(async (ct) =>
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Web@1.0.14
+#:sdk Cadenza.Web@1.0.15
 
 Get("/", () => "hello");
 Get("/health", () => new { status = "ok", time = DateTime.UtcNow });
@@ -186,7 +188,7 @@ record EchoResponse(string Echoed);
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Mcp@1.0.14
+#:sdk Cadenza.Mcp@1.0.15
 
 Tool("read_file", "Read a UTF-8 text file from disk",
     (string path) => ReadText(path));
@@ -214,7 +216,7 @@ Register with the client:
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.14
+#:sdk Cadenza.Agent@1.0.15
 
 ServedModelName = "cadenza-coder";
 
@@ -245,7 +247,7 @@ For Codex, drop tool registrations — Codex brings its own (`shell`, `apply_pat
 
 ```csharp
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.14
+#:sdk Cadenza.Agent@1.0.15
 
 ServedModelName = "cadenza-codex";
 
@@ -294,7 +296,7 @@ Supported RIDs: `linux-x64`, `linux-arm64`, `osx-x64`, `osx-arm64`, `win-x64`, `
 - `Sh.Run/Capture/Pipe/RunAsync/CaptureAsync` — shell exec with async variants
 - `Fs.ReadText/WriteText/ReadBytes/WriteBytes/Exists/Delete/Move/Copy/MakeDir/Glob/TempDir/ReadTextAsync`
 - `Http.GetJson<T>/PostJson<TReq,TResp>/GetText/Download` and `Http.Client` (shared `HttpClient` singleton)
-- `Env.Get/Args/Cwd/Exit/IsCi/IsWindows/IsMacOS/IsLinux`
+- `Env.Get/Args/Cwd/Exit/IsCi/IsWindows/IsMacOS/IsLinux/ScriptPath/ScriptDirectory`
 - `Prompt.Confirm/Select/Text/Password` (console + worker only)
 - `Json.Parse<T>/Stringify<T>` (always takes a `JsonSerializerContext`)
 

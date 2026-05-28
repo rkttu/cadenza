@@ -8,6 +8,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <!-- Enable transitive `#:` directives so a `#:package` / `#:property` /
+         `#:include` inside an `#:include`d file is honored. See
+         Cadenza/Sdk/Sdk.props for rationale. -->
+    <ExperimentalFileBasedProgramEnableTransitiveDirectives>true</ExperimentalFileBasedProgramEnableTransitiveDirectives>
     <!-- File-based apps have no `.resx`; suppress the default glob so a stray
          `**/*.resx` literal cannot reach GenerateResource on non-Windows hosts. -->
     <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>

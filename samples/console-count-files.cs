@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.14
+#:sdk Cadenza@1.0.15
 
 // Count source files by extension under the current directory.
 // Demonstrates: Glob recursion, basic LINQ grouping, Path helpers, sorted output.

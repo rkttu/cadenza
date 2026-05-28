@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza@1.0.14
+#:sdk Cadenza@1.0.15
 
 // Cadenza console script. Tier 1 bare names (no namespace prefix needed):
 //   Run(cmd), Capture(cmd)         — shell exec

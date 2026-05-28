@@ -1,5 +1,5 @@
 #!/usr/bin/env dotnet run
-#:sdk Cadenza.Agent@1.0.14
+#:sdk Cadenza.Agent@1.0.15
 
 // Cadenza AI agent script. Tier 1 bare names:
 //   Tool(name, description, handler)       — register a callable tool
