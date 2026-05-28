@@ -29,7 +29,7 @@ Select a variant by adding a `#:sdk` directive to the first line of your script.
 #:sdk Cadenza.Agent@1.0.15     // AI agent (OpenAI-compatible HTTP server)
 ```
 
-See [docs/spec.md](docs/spec.md) for the full specification (Korean) and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
+User docs live in the **[wiki](https://github.com/rkttu/cadenza/wiki)** — installation, editor setup, per-SDK reference, deployment recipes, and troubleshooting. For the formal spec see [docs/spec.md](docs/spec.md) (Korean) and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
 
 ## Examples
 

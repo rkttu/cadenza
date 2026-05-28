@@ -29,7 +29,7 @@
 #:sdk Cadenza.Agent@1.0.15     // AI 에이전트 (OpenAI 호환 HTTP 서버)
 ```
 
-전체 명세는 [docs/spec.md](docs/spec.md) (한국어), 배포 가이드는 [docs/publishing-single-binary.ko.md](docs/publishing-single-binary.ko.md) 참고.
+사용자 문서는 **[위키](https://github.com/rkttu/cadenza/wiki)** 에 있습니다 — 설치, 에디터 설정, SDK별 레퍼런스, 배포 레시피, 트러블슈팅. 형식 명세는 [docs/spec.md](docs/spec.md) (한국어), 배포 가이드는 [docs/publishing-single-binary.ko.md](docs/publishing-single-binary.ko.md) 참고.
 
 ## 예시
 
