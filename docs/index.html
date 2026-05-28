@@ -113,10 +113,10 @@
     margin-bottom: 28px;
   }
   h1.headline {
-    font-size: clamp(38px, 6.4vw, 72px);
-    line-height: 1.05; letter-spacing: -0.025em; font-weight: 800;
+    font-size: clamp(34px, 5vw, 56px);
+    line-height: 1.08; letter-spacing: -0.022em; font-weight: 800;
     margin: 0 0 22px;
-    max-width: 18ch;
+    max-width: 22ch;
   }
   h1.headline .accent {
     background: linear-gradient(120deg, var(--accent-soft) 0%, var(--accent) 60%, var(--accent-deep) 100%);
@@ -153,7 +153,7 @@
   .btn.ghost:hover { border-color: var(--accent); color: var(--accent-soft); }
 
   .hero-grid {
-    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px;
+    display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 44px;
     align-items: center;
   }
   .hero-demo {
@@ -429,7 +429,7 @@
 <span class="c">#:sdk Cadenza.Web@1.0.15</span>
 
 <span class="f">Get</span>(<span class="s">"/"</span>, () => <span class="s">"Hello from Cadenza.Web"</span>);
-<span class="f">Get</span>(<span class="s">"/health"</span>, () => <span class="k">new</span> { status = <span class="s">"ok"</span>, time = DateTime.UtcNow });
+<span class="f">Get</span>(<span class="s">"/health"</span>, () => <span class="k">new</span> { status = <span class="s">"ok"</span> });
 <span class="f">Post</span>(<span class="s">"/echo"</span>, (<span class="t">EchoRequest</span> req) =>
     <span class="k">new</span> <span class="t">EchoResponse</span>(req.Message.ToUpper()));
 
