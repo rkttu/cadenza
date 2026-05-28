@@ -282,9 +282,12 @@
   }
 
   .terminal {
+    margin: 0;
     background: var(--code-bg); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
     font-family: 'JetBrains Mono', monospace; font-size: 13.5px; line-height: 1.85;
+    white-space: pre;
+    overflow-x: auto;
   }
   .terminal .prompt { color: var(--accent); }
   .terminal .out { color: var(--text-mute); }
@@ -718,8 +721,7 @@
         </div>
       </div>
 
-      <div class="terminal" aria-label="terminal">
-<span class="comment"># 1. write</span>
+      <pre class="terminal" aria-label="terminal"><span class="comment"># 1. write</span>
 <span class="prompt">$</span> cat &gt; app.cs &lt;&lt;'EOF'
 <span class="out">#:sdk Cadenza.Web@1.0.15
 Get("/", () =&gt; "Hello, Cadenza");
@@ -733,8 +735,7 @@ EOF
 <span class="comment"># 3. ship (single binary)</span>
 <span class="prompt">$</span> dotnet publish app.cs -c Release \
     --self-contained -r linux-x64
-<span class="out">→ app   (~32 MB, no .NET runtime needed)</span>
-      </div>
+<span class="out">→ app   (~32 MB, no .NET runtime needed)</span></pre>
     </div>
   </div>
 </section>
