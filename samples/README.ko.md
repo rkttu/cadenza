@@ -8,7 +8,7 @@
 dotnet run <file>.cs
 ```
 
-각 샘플의 `#:sdk` 줄에는 최신 게시 버전을 정확히 핀해야 합니다 (현재 이 폴더의 파일들은 `Cadenza@1.0.15`, `Cadenza.Worker@1.0.15`, `Cadenza.Web@1.0.15`, `Cadenza.Mcp@1.0.15`, `Cadenza.Agent@1.0.15`로 고정). MSBuild SDK 참조는 정확한 버전만 받습니다 — 자세한 내용은 [docs/troubleshooting.ko.md](../docs/troubleshooting.ko.md).
+각 샘플의 `#:sdk` 줄에는 최신 게시 버전을 정확히 핀해야 합니다 (현재 이 폴더의 파일들은 `Cadenza@1.0.15`, `Cadenza.Worker@1.0.15`, `Cadenza.Web@1.0.15`, `Cadenza.Mcp@1.0.15`, `Cadenza.Agent@1.0.15`로 고정). MSBuild SDK 참조는 정확한 버전만 받습니다 — 자세한 내용은 위키 [Troubleshooting](https://github.com/rkttu/cadenza/wiki/Troubleshooting) 페이지 참고.
 
 ## 콘솔 스크립트 (`#:sdk Cadenza@...`)
 
@@ -84,4 +84,4 @@ codex      # 또는 aider, continue, cursor, sgpt, …
 dotnet publish console-deploy-guard.cs -r linux-x64 -c Release
 ```
 
-전체 배포 매트릭스(압축, AOT opt-in, 컨테이너 packaging)는 [docs/publishing-single-binary.ko.md](../docs/publishing-single-binary.ko.md) 참고.
+전체 배포 매트릭스(압축, AOT opt-in, 컨테이너 packaging)는 위키 [Deployment — Single Binary](https://github.com/rkttu/cadenza/wiki/Deployment-Single-Binary)와 [Deployment — Container](https://github.com/rkttu/cadenza/wiki/Deployment-Container) 페이지 참고.

@@ -29,7 +29,7 @@ Select a variant by adding a `#:sdk` directive to the first line of your script.
 #:sdk Cadenza.Agent@1.0.15     // AI agent (OpenAI-compatible HTTP server)
 ```
 
-User docs live in the **[wiki](https://github.com/rkttu/cadenza/wiki)** — installation, editor setup, per-SDK reference, deployment recipes, and troubleshooting. For the formal spec see [docs/spec.md](docs/spec.md) (Korean) and [docs/publishing-single-binary.md](docs/publishing-single-binary.md) for distribution.
+User docs live in the **[wiki](https://github.com/rkttu/cadenza/wiki)** — installation, editor setup, per-SDK reference, deployment recipes, and troubleshooting. The formal spec is at [spec.md](spec.md) (Korean).
 
 ## Examples
 
@@ -179,12 +179,13 @@ recipes.
 
 ## Troubleshooting
 
-Common issues and workarounds are collected in [docs/troubleshooting.md](docs/troubleshooting.md). Quick links:
+Common issues and workarounds are collected in the wiki: **[Troubleshooting](https://github.com/rkttu/cadenza/wiki/Troubleshooting)**. Frequent ones:
 
-- [`#:sdk Cadenza@1.*` (wildcard) gives "no version specified"](docs/troubleshooting.md#sdk-cadenza1-wildcard--floating-version-errors-with-no-version-specified) — MSBuild SDK refs require exact versions, unlike `PackageReference`
-- [Newly-released SDK version not picked up (stale NuGet cache)](docs/troubleshooting.md#newly-released-version-not-picked-up-stale-nuget-cache) — clear only Cadenza-related cache entries
-- [`MSB3552: **/*.resx not found` on macOS](docs/troubleshooting.md#macos-error-msb3552-resource-file-resx-could-not-be-found) — fixed in 1.0.1
-- [CJK / emoji garbled in `Capture(...)` output on Windows](docs/troubleshooting.md#capture-output-cjk--emoji-garbled-on-windows) — fixed in 1.0.4
+- `#:sdk Cadenza@1.*` (wildcard) gives "no version specified" — MSBuild SDK refs require exact versions, unlike `PackageReference`.
+- Newly-released SDK version not picked up — clear only the Cadenza entries from the NuGet HTTP cache.
+- `MSB3552: **/*.resx not found` on macOS — fixed in 1.0.1.
+- CJK / emoji garbled in `Capture(...)` output on Windows — fixed in 1.0.4.
+- IntelliSense not lighting up on Cursor / Kiro / VS Code forks — install the community C# extension from Open VSX. See the wiki [Editor Setup](https://github.com/rkttu/cadenza/wiki/Editor-Setup).
 
 ## License
 

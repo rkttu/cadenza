@@ -163,5 +163,6 @@ Point Codex / Aider / Continue / Cursor at it via `OPENAI_BASE_URL=http://localh
 ## Reference
 
 - README: <https://github.com/rkttu/cadenza/blob/main/README.md>
-- Spec: <https://github.com/rkttu/cadenza/blob/main/docs/spec.md>
+- Spec: <https://github.com/rkttu/cadenza/blob/main/spec.md>
+- Wiki: <https://github.com/rkttu/cadenza/wiki>
 - Samples: <https://github.com/rkttu/cadenza/tree/main/samples>

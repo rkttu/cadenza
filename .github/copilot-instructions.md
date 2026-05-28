@@ -192,7 +192,8 @@ Supported RIDs: `linux-x64`, `linux-arm64`, `osx-x64`, `osx-arm64`, `win-x64`, `
 ## Reference
 
 - README: <https://github.com/rkttu/cadenza/blob/main/README.md>
-- Spec (Korean): <https://github.com/rkttu/cadenza/blob/main/docs/spec.md>
-- Publishing guide: <https://github.com/rkttu/cadenza/blob/main/docs/publishing-single-binary.md>
-- Troubleshooting: <https://github.com/rkttu/cadenza/blob/main/docs/troubleshooting.md>
+- Spec (Korean): <https://github.com/rkttu/cadenza/blob/main/spec.md>
+- Wiki (user docs): <https://github.com/rkttu/cadenza/wiki>
+- Publishing guide: <https://github.com/rkttu/cadenza/wiki/Deployment-Single-Binary>
+- Troubleshooting: <https://github.com/rkttu/cadenza/wiki/Troubleshooting>
 - Samples (9 progressive examples): <https://github.com/rkttu/cadenza/tree/main/samples>

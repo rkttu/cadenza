@@ -569,7 +569,7 @@ await Run();
 
 - **(a) `IncludeNativeLibrariesForSelfExtract`** — `false` (외부 추출). 모든 변종 Sdk.props에 명시.
 - **(b) `EnableCompressionInSingleFile`** — `true` (Worker/Web/Mcp/Agent 기준). Cadenza(콘솔)도 동일.
-- **(c) `PublishTrimmed`** — default off 유지, 90a75df에서 file-based AOT default override 추가. trim 가이드는 README 트러블슈팅 (`docs/troubleshooting.md`)으로 분리 완료.
+- **(c) `PublishTrimmed`** — default off 유지, 90a75df에서 file-based AOT default override 추가. trim 가이드는 위키 [Troubleshooting](https://github.com/rkttu/cadenza/wiki/Troubleshooting) 페이지로 이관 완료.
 
 ### 10.6 비대화형 Prompt 정책
 

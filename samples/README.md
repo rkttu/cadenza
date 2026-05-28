@@ -12,7 +12,7 @@ Pin the SDK version in the `#:sdk` line of each sample to the latest published
 release (the files in this folder currently pin `Cadenza@1.0.15`,
 `Cadenza.Worker@1.0.15`, `Cadenza.Web@1.0.15`, `Cadenza.Mcp@1.0.15`,
 `Cadenza.Agent@1.0.15`). MSBuild SDK references require an exact version —
-see [docs/troubleshooting.md](../docs/troubleshooting.md) for details.
+see the wiki [Troubleshooting](https://github.com/rkttu/cadenza/wiki/Troubleshooting) page for details.
 
 ## Console scripts (`#:sdk Cadenza@...`)
 
@@ -91,5 +91,6 @@ Any of these samples can be turned into a self-contained binary:
 dotnet publish console-deploy-guard.cs -r linux-x64 -c Release
 ```
 
-See [docs/publishing-single-binary.md](../docs/publishing-single-binary.md)
-for the full distribution matrix (compression, AOT opt-in, container packaging).
+See the wiki [Deployment — Single Binary](https://github.com/rkttu/cadenza/wiki/Deployment-Single-Binary)
+and [Deployment — Container](https://github.com/rkttu/cadenza/wiki/Deployment-Container)
+pages for the full distribution matrix (compression, AOT opt-in, container packaging).
