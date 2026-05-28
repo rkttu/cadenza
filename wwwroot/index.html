@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cadenza — Write C# like a script. Ship it like Go.</title>
+<meta name="description" content="Cadenza is a .NET 10+ single-file SDK family. Write a .cs file, run it with dotnet run, and ship it as one self-contained binary — or as a container, with no Dockerfile." />
+<meta name="theme-color" content="#0b0b10" />
+
+<meta property="og:title" content="Cadenza — Write C# like a script. Ship it like Go." />
+<meta property="og:description" content="No orchestra. No project. Just one file, playing solo." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://github.com/rkttu/cadenza" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #0b0b10;
+    --bg-soft: #11121a;
+    --bg-card: #15161f;
+    --border: #23242f;
+    --border-strong: #2e2f3d;
+    --text: #e7e7ee;
+    --text-dim: #a8a9b8;
+    --text-mute: #74758a;
+    --accent: #d4af6e;            /* warm brass — concert hall */
+    --accent-soft: #f1d9a5;
+    --accent-deep: #8a6a36;
+    --pink: #e07a8e;
+    --green: #7bc99c;
+    --blue: #7fb6ff;
+    --violet: #b39bff;
+    --code-bg: #0d0e15;
+    --shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -30px rgba(0,0,0,0.7);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --maxw: 1120px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background-image:
+      radial-gradient(800px 400px at 80% -10%, rgba(212,175,110,0.10), transparent 70%),
+      radial-gradient(700px 380px at -10% 10%, rgba(179,155,255,0.07), transparent 70%);
+  }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--accent-soft); }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ─── header ─── */
+  header.site {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(11,11,16,0.72);
+    border-bottom: 1px solid var(--border);
+  }
+  header.site .row {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    display: flex; align-items: baseline; gap: 10px;
+    font-weight: 700; letter-spacing: -0.01em;
+  }
+  .brand .mark {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic; font-weight: 500;
+    font-size: 28px; color: var(--accent);
+    line-height: 1;
+  }
+  .brand .ver { font-size: 12px; color: var(--text-mute); font-weight: 500; }
+
+  nav.primary { display: flex; align-items: center; gap: 22px; }
+  nav.primary a { color: var(--text-dim); font-size: 14px; font-weight: 500; }
+  nav.primary a:hover { color: var(--text); }
+
+  .lang {
+    display: inline-flex; align-items: center;
+    background: var(--bg-soft); border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px;
+    font-size: 12px; font-weight: 600;
+  }
+  .lang button {
+    background: transparent; border: 0; color: var(--text-mute);
+    padding: 5px 12px; border-radius: 999px; cursor: pointer;
+    font-weight: 600; letter-spacing: 0.04em;
+    font-family: inherit;
+  }
+  .lang button.active {
+    background: var(--accent); color: #1c1408;
+  }
+
+  /* ─── hero ─── */
+  section.hero { padding: 88px 0 64px; position: relative; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600;
+    border: 1px solid var(--accent-deep); padding: 6px 12px; border-radius: 999px;
+    background: rgba(212,175,110,0.06);
+    margin-bottom: 28px;
+  }
+  h1.headline {
+    font-size: clamp(38px, 6.4vw, 72px);
+    line-height: 1.05; letter-spacing: -0.025em; font-weight: 800;
+    margin: 0 0 22px;
+    max-width: 18ch;
+  }
+  h1.headline .accent {
+    background: linear-gradient(120deg, var(--accent-soft) 0%, var(--accent) 60%, var(--accent-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 500;
+  }
+  .subhead {
+    font-size: clamp(17px, 1.6vw, 20px); color: var(--text-dim);
+    max-width: 56ch; margin: 0 0 28px;
+  }
+  .energy {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 14px; color: var(--text-mute);
+    border: 1px solid var(--border); background: var(--bg-soft);
+    padding: 10px 16px; border-radius: 999px;
+    margin-bottom: 36px;
+  }
+  .energy b { color: var(--text); font-weight: 600; }
+  .energy .dot { width: 4px; height: 4px; border-radius: 999px; background: var(--accent); }
+
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 18px; border-radius: 10px; font-weight: 600; font-size: 14px;
+    border: 1px solid var(--border-strong); cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    font-family: inherit;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.primary { background: var(--accent); color: #1c1408; border-color: var(--accent); }
+  .btn.primary:hover { background: var(--accent-soft); color: #1c1408; }
+  .btn.ghost { background: var(--bg-soft); color: var(--text); }
+  .btn.ghost:hover { border-color: var(--accent); color: var(--accent-soft); }
+
+  .hero-grid {
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px;
+    align-items: center;
+  }
+  .hero-demo {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .hero-demo .tabbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  }
+  .hero-demo .tabbar .dot { width: 10px; height: 10px; border-radius: 999px; background: #2c2d3a; }
+  .hero-demo .tabbar .name {
+    margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--text-mute);
+  }
+  pre.code {
+    margin: 0; padding: 20px 22px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 13.5px; line-height: 1.7; color: #d6d7e0;
+    background: var(--code-bg);
+    overflow-x: auto;
+  }
+  .code .k { color: var(--violet); }
+  .code .s { color: var(--green); }
+  .code .c { color: var(--text-mute); font-style: italic; }
+  .code .t { color: var(--accent-soft); }
+  .code .f { color: var(--blue); }
+  .code .p { color: var(--pink); }
+
+  /* ─── sections ─── */
+  section { padding: 80px 0; border-top: 1px solid var(--border); }
+  section h2 {
+    font-size: clamp(28px, 3.4vw, 40px); line-height: 1.15;
+    letter-spacing: -0.02em; font-weight: 700;
+    margin: 0 0 14px; max-width: 24ch;
+  }
+  section h2 em {
+    font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 500; color: var(--accent-soft);
+    font-style: italic;
+  }
+  section .lead {
+    font-size: 17px; color: var(--text-dim); max-width: 64ch; margin: 0 0 48px;
+  }
+  .kicker {
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 14px;
+  }
+
+  /* ─── three beats ─── */
+  .beats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .beat {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .beat:hover { border-color: var(--accent-deep); transform: translateY(-2px); }
+  .beat .num {
+    font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic;
+    font-size: 30px; color: var(--accent); line-height: 1; margin-bottom: 14px;
+  }
+  .beat h3 { margin: 0 0 8px; font-size: 19px; letter-spacing: -0.01em; }
+  .beat p { margin: 0; color: var(--text-dim); font-size: 15px; }
+
+  /* ─── variants ─── */
+  .var-tabs {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px;
+    border: 1px solid var(--border); background: var(--bg-soft);
+    padding: 6px; border-radius: 999px; width: fit-content;
+  }
+  .var-tabs button {
+    background: transparent; border: 0; color: var(--text-dim);
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .var-tabs button.active { background: var(--accent); color: #1c1408; }
+  .var-tabs button:hover:not(.active) { color: var(--text); }
+
+  .variant {
+    display: none;
+    grid-template-columns: 0.9fr 1.1fr; gap: 36px; align-items: start;
+  }
+  .variant.active { display: grid; }
+  .variant .desc h3 {
+    font-size: 22px; margin: 0 0 10px; letter-spacing: -0.01em;
+  }
+  .variant .desc p { color: var(--text-dim); font-size: 15.5px; margin: 0 0 14px; }
+  .variant .tag {
+    display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--accent); background: rgba(212,175,110,0.08);
+    border: 1px solid var(--accent-deep); padding: 4px 10px; border-radius: 6px;
+  }
+  .variant .frame {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .variant .frame .tabbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-mute);
+  }
+  .variant .frame .tabbar .dot { width: 10px; height: 10px; border-radius: 999px; background: #2c2d3a; }
+
+  /* ─── quickstart ─── */
+  .qs-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: start; }
+  .qs-steps { display: flex; flex-direction: column; gap: 18px; }
+  .qs-step {
+    display: grid; grid-template-columns: 28px 1fr; gap: 14px; align-items: start;
+  }
+  .qs-step .n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 999px;
+    background: rgba(212,175,110,0.10); color: var(--accent);
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px;
+    border: 1px solid var(--accent-deep);
+  }
+  .qs-step .body h4 { margin: 2px 0 4px; font-size: 16px; }
+  .qs-step .body p { margin: 0; color: var(--text-dim); font-size: 14.5px; }
+  .qs-step code {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    background: var(--bg-soft); padding: 2px 6px; border-radius: 5px;
+    border: 1px solid var(--border);
+  }
+
+  .terminal {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
+    font-family: 'JetBrains Mono', monospace; font-size: 13.5px; line-height: 1.85;
+  }
+  .terminal .prompt { color: var(--accent); }
+  .terminal .out { color: var(--text-mute); }
+  .terminal .comment { color: var(--text-mute); font-style: italic; }
+
+  /* ─── container section ─── */
+  .ship {
+    background: linear-gradient(135deg, rgba(212,175,110,0.06), rgba(179,155,255,0.04));
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 48px;
+  }
+  .ship h2 { margin-top: 0; }
+  .ship .cmd {
+    margin-top: 28px; background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 18px 22px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13.5px;
+    overflow-x: auto;
+  }
+  .ship .cmd .prompt { color: var(--accent); }
+  .ship .note {
+    margin-top: 18px; font-size: 13.5px; color: var(--text-mute);
+    border-left: 2px solid var(--accent-deep); padding: 4px 0 4px 14px;
+  }
+
+  /* ─── differentiators ─── */
+  .diffs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .diff {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--bg-card); padding: 24px;
+  }
+  .diff h4 { margin: 0 0 8px; font-size: 16px; }
+  .diff h4 .v { color: var(--text-mute); font-weight: 500; }
+  .diff p { margin: 0; color: var(--text-dim); font-size: 14.5px; }
+
+  /* ─── boundaries ─── */
+  .bounds {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 32px; background: var(--bg-soft);
+  }
+  .bounds h2 { margin: 0 0 16px; }
+  .bounds ul { margin: 0; padding-left: 22px; color: var(--text-dim); }
+  .bounds ul li { padding: 6px 0; }
+  .bounds ul li::marker { color: var(--accent); }
+
+  /* ─── footer ─── */
+  footer.site {
+    border-top: 1px solid var(--border);
+    padding: 48px 0 64px;
+    color: var(--text-mute); font-size: 14px;
+  }
+  footer.site .row {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+  }
+  footer.site a { color: var(--text-dim); }
+  footer.site a:hover { color: var(--accent-soft); }
+  footer.site .small { font-size: 12.5px; }
+
+  /* ─── small ─── */
+  @media (max-width: 880px) {
+    section.hero { padding: 56px 0 36px; }
+    .hero-grid, .variant.active, .qs-grid { grid-template-columns: 1fr !important; gap: 28px; }
+    .beats, .diffs { grid-template-columns: 1fr; }
+    nav.primary { display: none; }
+    section { padding: 56px 0; }
+    .ship { padding: 28px; }
+  }
+
+  /* ─── language toggle behavior ─── */
+  [data-ko] { display: none; }
+  html[lang="ko"] [data-en] { display: none; }
+  html[lang="ko"] [data-ko] { display: initial; }
+  /* keep inline data-ko spans behaving like their siblings */
+  html[lang="ko"] [data-ko].block { display: block; }
+
+  ::selection { background: rgba(212,175,110,0.4); color: #1c1408; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap row">
+    <div class="brand">
+      <span class="mark">cadenza</span>
+      <span class="ver">v1.0 · .NET 10+</span>
+    </div>
+    <nav class="primary">
+      <a href="#why"><span data-en>Why</span><span data-ko>왜</span></a>
+      <a href="#variants"><span data-en>SDKs</span><span data-ko>SDK</span></a>
+      <a href="#quickstart"><span data-en>Quickstart</span><span data-ko>퀵스타트</span></a>
+      <a href="#ship"><span data-en>Ship</span><span data-ko>배포</span></a>
+      <a href="https://github.com/rkttu/cadenza" target="_blank" rel="noopener">GitHub →</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="ko">KO</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">
+          <span data-en>One file. One binary. One command.</span>
+          <span data-ko>한 파일. 한 바이너리. 한 명령.</span>
+        </span>
+        <h1 class="headline">
+          <span data-en>Write C# <em class="accent">like a script.</em><br>Ship it <em class="accent">like Go.</em></span>
+          <span data-ko>C#을 <em class="accent">스크립트처럼</em> 쓰고,<br><em class="accent">Go처럼</em> 배포하라.</span>
+        </h1>
+        <p class="subhead">
+          <span data-en>No orchestra. No project. Just one file, playing solo. Cadenza turns .NET 10's file&#8209;based apps into a real workflow — console, worker, web, MCP, agent.</span>
+          <span data-ko>오케스트라도, 프로젝트도 없이 — 홀로 연주하는 단 하나의 파일. Cadenza는 .NET 10의 파일 기반 앱을 콘솔·워커·웹·MCP·에이전트의 실제 워크플로로 다듬어 줍니다.</span>
+        </p>
+        <div class="energy">
+          <span class="dot"></span>
+          <span data-en><b>Write it.</b> <b>Run it.</b> <b>Ship it.</b></span>
+          <span data-ko><b>쓰고,</b> <b>실행하고,</b> <b>배포하라.</b></span>
+        </div>
+        <div class="cta-row">
+          <a class="btn primary" href="#quickstart">
+            <span data-en>Get started</span><span data-ko>시작하기</span> →
+          </a>
+          <a class="btn ghost" href="https://github.com/rkttu/cadenza" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.4c-2.22.48-2.69-1.07-2.69-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.22.83 1.22.83.72 1.23 1.88.87 2.34.66.07-.52.28-.87.51-1.07-1.77-.2-3.64-.88-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.13 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.11.16 1.93.08 2.13.51.56.82 1.28.82 2.15 0 3.08-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.19c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+      <div class="hero-demo">
+        <div class="tabbar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="name">api.cs</span>
+        </div>
+<pre class="code"><span class="c">#!/usr/bin/env dotnet run</span>
+<span class="c">#:sdk Cadenza.Web@1.0.15</span>
+
+<span class="f">Get</span>(<span class="s">"/"</span>, () => <span class="s">"Hello from Cadenza.Web"</span>);
+<span class="f">Get</span>(<span class="s">"/health"</span>, () => <span class="k">new</span> { status = <span class="s">"ok"</span>, time = DateTime.UtcNow });
+<span class="f">Post</span>(<span class="s">"/echo"</span>, (<span class="t">EchoRequest</span> req) =>
+    <span class="k">new</span> <span class="t">EchoResponse</span>(req.Message.ToUpper()));
+
+<span class="k">await</span> <span class="f">Run</span>();
+
+<span class="k">record</span> <span class="t">EchoRequest</span>(<span class="k">string</span> Message);
+<span class="k">record</span> <span class="t">EchoResponse</span>(<span class="k">string</span> Echoed);</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHY ─── -->
+<section id="why">
+  <div class="wrap">
+    <div class="kicker"><span data-en>Why it exists</span><span data-ko>왜 태어났는가</span></div>
+    <h2>
+      <span data-en>.NET 10 opened the door. Cadenza walks <em>five ways</em> through it.</span>
+      <span data-ko>.NET 10이 문을 열었다. Cadenza는 그 문을 <em>다섯 갈래</em>로 걸어 나간다.</span>
+    </h2>
+    <p class="lead">
+      <span data-en><code>dotnet run app.cs</code> unlocked single-file execution — but raw. Cadenza shapes that primitive into a real workflow across console, worker, web, MCP and agent, so a single <code>.cs</code> becomes the whole program — and that program ships as one binary. Script to start, binary to finish.</span>
+      <span data-ko><code>dotnet run app.cs</code>는 "프로젝트 없이 단일 파일 실행"의 문을 열었지만 날것이었습니다. Cadenza는 그 원시 능력을 콘솔·워커·웹·MCP·에이전트 다섯 갈래에서 실제로 쓸 만하게 다듬어, 파일 하나가 곧 프로그램 전체가 되고 그 프로그램이 단일 바이너리로 배포되는 경험을 완성합니다. 스크립트로 시작해 바이너리로 끝납니다.</span>
+    </p>
+
+    <div class="beats">
+      <div class="beat">
+        <div class="num">i.</div>
+        <h3><span data-en>Immediacy</span><span data-ko>즉시성</span></h3>
+        <p>
+          <span data-en>No <code>.csproj</code>. No scaffolding. A single file runs as-is — as immediate as <code>node app.js</code>.</span>
+          <span data-ko><code>.csproj</code>도 스캐폴딩도 없이 파일 하나가 그대로 실행됩니다 — <code>node app.js</code>만큼 즉시.</span>
+        </p>
+      </div>
+      <div class="beat">
+        <div class="num">ii.</div>
+        <h3><span data-en>Continuity</span><span data-ko>연속성</span></h3>
+        <p>
+          <span data-en>Change one <code>#:sdk</code> line and the same model scales from shell scripts to workers, web APIs, MCP servers and local AI agents.</span>
+          <span data-ko><code>#:sdk</code> 한 줄만 바꾸면 셸 스크립트에서 워커·웹 API·MCP 서버·로컬 AI 에이전트까지 같은 모델로 확장됩니다.</span>
+        </p>
+      </div>
+      <div class="beat">
+        <div class="num">iii.</div>
+        <h3><span data-en>Deployment</span><span data-ko>배포</span></h3>
+        <p>
+          <span data-en>Self-contained (~30–40 MB) or AOT (~10–30 MB) single binaries — or publish the same file as an OCI image without a Dockerfile.</span>
+          <span data-ko>자족형(약 30–40MB) 또는 AOT(약 10–30MB) 단일 바이너리로 — 같은 파일을 Dockerfile 없이 OCI 이미지로 게시할 수도 있습니다.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── VARIANTS ─── -->
+<section id="variants">
+  <div class="wrap">
+    <div class="kicker"><span data-en>Five SDKs, one model</span><span data-ko>다섯 갈래, 하나의 모델</span></div>
+    <h2>
+      <span data-en>One <code>#:sdk</code> line decides what your file <em>becomes.</em></span>
+      <span data-ko><code>#:sdk</code> 한 줄이 파일의 <em>정체를</em> 결정한다.</span>
+    </h2>
+    <p class="lead">
+      <span data-en>The same Tier-1 bare names (<code>Glob</code>, <code>ReadText</code>, <code>Get</code>, <code>Tool</code>, <code>Log</code>, <code>Run</code>) flow through every SDK. Pick the one that matches the shape of your program — the file stays one file.</span>
+      <span data-ko>같은 Tier-1 베어 네임(<code>Glob</code>, <code>ReadText</code>, <code>Get</code>, <code>Tool</code>, <code>Log</code>, <code>Run</code>)이 모든 SDK에 흐릅니다. 프로그램의 모양에 맞는 것을 고르세요 — 파일은 여전히 한 개입니다.</span>
+    </p>
+
+    <div class="var-tabs" role="tablist">
+      <button class="active" data-variant="console">Console</button>
+      <button data-variant="worker">Worker</button>
+      <button data-variant="web">Web</button>
+      <button data-variant="mcp">MCP</button>
+      <button data-variant="agent">Agent</button>
+    </div>
+
+    <!-- console -->
+    <div class="variant active" data-variant="console">
+      <div class="desc">
+        <span class="tag">#:sdk Cadenza@1.0.15</span>
+        <h3 style="margin-top:14px">
+          <span data-en>Shell automation. CLI tools. One-off scripts.</span>
+          <span data-ko>셸 자동화. CLI 도구. 일회성 스크립트.</span>
+        </h3>
+        <p>
+          <span data-en>Replace bash + jq + awk with a single typed <code>.cs</code>. Bare names like <code>Glob</code>, <code>ReadText</code>, <code>WriteLine</code> work without imports.</span>
+          <span data-ko>bash + jq + awk를 단일 타입 안전 <code>.cs</code> 한 장으로 대체하세요. <code>Glob</code>, <code>ReadText</code>, <code>WriteLine</code> 같은 베어 네임이 import 없이 동작합니다.</span>
+        </p>
+      </div>
+      <div class="frame">
+        <div class="tabbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;count-files.cs</div>
+<pre class="code"><span class="c">#!/usr/bin/env dotnet run</span>
+<span class="c">#:sdk Cadenza@1.0.15</span>
+
+<span class="k">foreach</span> (<span class="k">var</span> file <span class="k">in</span> <span class="f">Glob</span>(<span class="s">"**/*.md"</span>))
+{
+    <span class="k">var</span> content = <span class="f">ReadText</span>(file);
+    <span class="f">WriteLine</span>(<span class="s">$"{file}: {content.Length:N0} bytes"</span>);
+}</pre>
+      </div>
+    </div>
+
+    <!-- worker -->
+    <div class="variant" data-variant="worker">
+      <div class="desc">
+        <span class="tag">#:sdk Cadenza.Worker@1.0.15</span>
+        <h3 style="margin-top:14px">
+          <span data-en>Background services that respect Ctrl+C.</span>
+          <span data-ko>Ctrl+C를 존중하는 백그라운드 서비스.</span>
+        </h3>
+        <p>
+          <span data-en><code>Run</code> hosts a <code>BackgroundService</code> wired to <code>ILogger</code>. SIGTERM cancels the token. Just write the loop.</span>
+          <span data-ko><code>Run</code>이 <code>BackgroundService</code>를 호스팅하고 <code>ILogger</code>에 자동 배선됩니다. SIGTERM이 토큰을 취소합니다. 루프만 쓰세요.</span>
+        </p>
+      </div>
+      <div class="frame">
+        <div class="tabbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;heartbeat.cs</div>
+<pre class="code"><span class="c">#!/usr/bin/env dotnet run</span>
+<span class="c">#:sdk Cadenza.Worker@1.0.15</span>
+
+<span class="k">await</span> <span class="f">Run</span>(<span class="k">async</span> (ct) =>
+{
+    <span class="k">while</span> (!ct.IsCancellationRequested)
+    {
+        <span class="t">Log</span>.<span class="f">Info</span>(<span class="s">$"Heartbeat at {DateTime.UtcNow:O}"</span>);
+        <span class="k">await</span> Task.Delay(TimeSpan.FromSeconds(<span class="p">30</span>), ct);
+    }
+});</pre>
+      </div>
+    </div>
+
+    <!-- web -->
+    <div class="variant" data-variant="web">
+      <div class="desc">
+        <span class="tag">#:sdk Cadenza.Web@1.0.15</span>
+        <h3 style="margin-top:14px">
+          <span data-en>Minimal APIs without ceremony.</span>
+          <span data-ko>형식 절차 없는 Minimal API.</span>
+        </h3>
+        <p>
+          <span data-en><code>Get</code>, <code>Post</code>, <code>Put</code>, <code>Delete</code> at top level. Records bind to JSON. <code>Run</code> starts Kestrel.</span>
+          <span data-ko>최상위 레벨의 <code>Get</code>, <code>Post</code>, <code>Put</code>, <code>Delete</code>. record가 JSON에 자동 바인딩되고, <code>Run</code>이 Kestrel을 띄웁니다.</span>
+        </p>
+      </div>
+      <div class="frame">
+        <div class="tabbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;api.cs</div>
+<pre class="code"><span class="c">#!/usr/bin/env dotnet run</span>
+<span class="c">#:sdk Cadenza.Web@1.0.15</span>
+
+<span class="f">Get</span>(<span class="s">"/"</span>, () => <span class="s">"Hello from Cadenza.Web"</span>);
+<span class="f">Get</span>(<span class="s">"/health"</span>, () => <span class="k">new</span> { status = <span class="s">"ok"</span> });
+<span class="f">Post</span>(<span class="s">"/echo"</span>, (<span class="t">EchoRequest</span> req) =>
+    <span class="k">new</span> <span class="t">EchoResponse</span>(req.Message.ToUpper()));
+
+<span class="k">await</span> <span class="f">Run</span>();
+
+<span class="k">record</span> <span class="t">EchoRequest</span>(<span class="k">string</span> Message);
+<span class="k">record</span> <span class="t">EchoResponse</span>(<span class="k">string</span> Echoed);</pre>
+      </div>
+    </div>
+
+    <!-- mcp -->
+    <div class="variant" data-variant="mcp">
+      <div class="desc">
+        <span class="tag">#:sdk Cadenza.Mcp@1.0.15</span>
+        <h3 style="margin-top:14px">
+          <span data-en>An MCP server in a single file.</span>
+          <span data-ko>단일 파일로 만드는 MCP 서버.</span>
+        </h3>
+        <p>
+          <span data-en>Expose typed <code>Tool</code> calls to Claude Desktop, Cursor, VS Code — no SDK glue, no project tree.</span>
+          <span data-ko>타입 안전한 <code>Tool</code>을 Claude Desktop, Cursor, VS Code에 그대로 노출합니다 — SDK 접착 코드도, 프로젝트 트리도 없이.</span>
+        </p>
+      </div>
+      <div class="frame">
+        <div class="tabbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;mcp-files.cs</div>
+<pre class="code"><span class="c">#!/usr/bin/env dotnet run</span>
+<span class="c">#:sdk Cadenza.Mcp@1.0.15</span>
+
+<span class="f">Tool</span>(<span class="s">"read_file"</span>, <span class="s">"Read a UTF-8 text file from disk"</span>,
+    (<span class="k">string</span> path) => <span class="f">ReadText</span>(path));
+
+<span class="f">Tool</span>(<span class="s">"list_files"</span>, <span class="s">"List files matching a glob pattern"</span>,
+    (<span class="k">string</span> pattern) => <span class="f">Glob</span>(pattern).ToArray());
+
+<span class="k">await</span> <span class="f">Run</span>();</pre>
+      </div>
+    </div>
+
+    <!-- agent -->
+    <div class="variant" data-variant="agent">
+      <div class="desc">
+        <span class="tag">#:sdk Cadenza.Agent@1.0.15</span>
+        <h3 style="margin-top:14px">
+          <span data-en>A local AI agent, OpenAI-compatible.</span>
+          <span data-ko>OpenAI 호환의 로컬 AI 에이전트.</span>
+        </h3>
+        <p>
+          <span data-en>Boots an OpenAI-compatible HTTP server with callable tools. Point Codex, Aider, Continue, sgpt at <code>http://localhost:8080</code>.</span>
+          <span data-ko>호출 가능한 도구를 갖춘 OpenAI 호환 HTTP 서버를 띄웁니다. Codex, Aider, Continue, sgpt를 <code>http://localhost:8080</code>에 그대로 가리키세요.</span>
+        </p>
+      </div>
+      <div class="frame">
+        <div class="tabbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>&nbsp;agent.cs</div>
+<pre class="code"><span class="c">#!/usr/bin/env dotnet run</span>
+<span class="c">#:sdk Cadenza.Agent@1.0.15</span>
+
+<span class="f">SystemPrompt</span>(<span class="s">"You are a helpful assistant with read-only FS access."</span>);
+
+<span class="f">Tool</span>(<span class="s">"read_file"</span>, <span class="s">"Read a UTF-8 text file from disk"</span>,
+    (<span class="k">string</span> path) => <span class="f">ReadText</span>(path));
+
+<span class="f">Tool</span>(<span class="s">"list_files"</span>, <span class="s">"List files matching a glob pattern"</span>,
+    (<span class="k">string</span> pattern) => <span class="f">Glob</span>(pattern).ToArray());
+
+<span class="f">UseOllama</span>(<span class="s">"llama3.2"</span>);
+
+<span class="k">await</span> <span class="f">Run</span>();</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── QUICKSTART ─── -->
+<section id="quickstart">
+  <div class="wrap">
+    <div class="kicker"><span data-en>Zero-install run</span><span data-ko>무설치 실행</span></div>
+    <h2>
+      <span data-en>If they have the .NET SDK, <em>they have your program.</em></span>
+      <span data-ko>받는 사람이 .NET SDK만 있다면 <em>곧 당신의 프로그램을 가진 셈입니다.</em></span>
+    </h2>
+    <p class="lead">
+      <span data-en>Three steps from a fresh shell to a running service. No template, no project, no scaffolding.</span>
+      <span data-ko>새 셸에서 구동 중인 서비스까지 세 단계. 템플릿도, 프로젝트도, 스캐폴딩도 없습니다.</span>
+    </p>
+
+    <div class="qs-grid">
+      <div class="qs-steps">
+        <div class="qs-step">
+          <div class="n">1</div>
+          <div class="body">
+            <h4><span data-en>Create a file</span><span data-ko>파일을 만든다</span></h4>
+            <p>
+              <span data-en>One <code>#:sdk</code> directive picks the runtime. Save as <code>app.cs</code>.</span>
+              <span data-ko><code>#:sdk</code> 한 줄로 런타임을 고릅니다. <code>app.cs</code>로 저장하세요.</span>
+            </p>
+          </div>
+        </div>
+        <div class="qs-step">
+          <div class="n">2</div>
+          <div class="body">
+            <h4><span data-en>Run it</span><span data-ko>실행한다</span></h4>
+            <p>
+              <span data-en>Just <code>dotnet run app.cs</code>. The first run restores the SDK; subsequent runs start in &lt; 1s.</span>
+              <span data-ko><code>dotnet run app.cs</code>만 입력. 첫 실행은 SDK를 복원하고, 이후는 1초 미만으로 부팅됩니다.</span>
+            </p>
+          </div>
+        </div>
+        <div class="qs-step">
+          <div class="n">3</div>
+          <div class="body">
+            <h4><span data-en>Ship it</span><span data-ko>배포한다</span></h4>
+            <p>
+              <span data-en>Publish as a self-contained binary, or straight into a container image. Same file. Same command.</span>
+              <span data-ko>자족형 단일 바이너리로, 혹은 곧장 컨테이너 이미지로 게시합니다. 같은 파일, 같은 명령으로.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal" aria-label="terminal">
+<span class="comment"># 1. write</span>
+<span class="prompt">$</span> cat &gt; app.cs &lt;&lt;'EOF'
+<span class="out">#:sdk Cadenza.Web@1.0.15
+Get("/", () =&gt; "Hello, Cadenza");
+await Run();</span>
+EOF
+
+<span class="comment"># 2. run</span>
+<span class="prompt">$</span> dotnet run app.cs
+<span class="out">Now listening on: http://localhost:5000</span>
+
+<span class="comment"># 3. ship (single binary)</span>
+<span class="prompt">$</span> dotnet publish app.cs -c Release \
+    --self-contained -r linux-x64
+<span class="out">→ app   (~32 MB, no .NET runtime needed)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SHIP CONTAINER ─── -->
+<section id="ship">
+  <div class="wrap">
+    <div class="ship">
+      <div class="kicker"><span data-en>The solo, taken to a container</span><span data-ko>솔로 연주가 컨테이너째로</span></div>
+      <h2>
+        <span data-en>No orchestra — <em>not even a Dockerfile.</em></span>
+        <span data-ko>오케스트라도, <em>Dockerfile조차도 없이.</em></span>
+      </h2>
+      <p class="lead" style="margin-bottom:0">
+        <span data-en>One file plays it all the way to a container. Built into the .NET SDK — Cadenza just lets you point it at a <code>.cs</code>.</span>
+        <span data-ko>한 개의 파일이 컨테이너까지 혼자 연주합니다. .NET SDK에 내장된 기능을 <code>.cs</code> 하나에 그대로 겨눕니다.</span>
+      </p>
+
+      <div class="cmd">
+<span class="prompt">$</span> dotnet publish app.cs --os linux --arch x64 /t:PublishContainer
+<span style="color:var(--text-mute)">  → registry.local/app:1.0  (built, tagged, pushed)</span>
+
+<span class="prompt">$</span> docker run -p 8080:8080 registry.local/app:1.0
+<span style="color:var(--text-mute)">  → Now listening on: http://0.0.0.0:8080</span>
+      </div>
+
+      <p class="note">
+        <span data-en>Bind to <code>0.0.0.0</code> inside the container so external requests can reach it. For the smallest images, combine AOT publish with an Alpine or chiseled base.</span>
+        <span data-ko>컨테이너 안의 서버는 <code>0.0.0.0</code>에 바인딩해야 외부에서 닿을 수 있습니다. 가장 작은 이미지를 원한다면 AOT 게시와 Alpine 또는 chiseled 베이스를 조합하세요.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DIFFERENTIATORS ─── -->
+<section id="diff">
+  <div class="wrap">
+    <div class="kicker"><span data-en>How it's different</span><span data-ko>무엇이 다른가</span></div>
+    <h2>
+      <span data-en>Built <em>on</em> the platform, not <em>beside</em> it.</span>
+      <span data-ko>플랫폼 <em>위에</em> 올라탔지, <em>옆에</em> 따로 서 있지 않다.</span>
+    </h2>
+
+    <div class="diffs">
+      <div class="diff">
+        <h4><span data-en>Native, not hosted</span><span data-ko>네이티브, 별도 호스트 아님</span> <span class="v">vs <code>dotnet-script</code> / CS-Script</span></h4>
+        <p>
+          <span data-en>Cadenza sits on .NET 10's native file-based apps — no custom runtime, no separate host. It evolves with the platform and needs no extra install.</span>
+          <span data-ko>Cadenza는 .NET 10의 네이티브 file-based app 위에 있습니다 — 별도 런타임도, 호스트도 없습니다. 플랫폼과 함께 진화하고 추가 설치가 필요 없습니다.</span>
+        </p>
+      </div>
+      <div class="diff">
+        <h4><span data-en>Real IntelliSense, no Dev Kit needed</span><span data-ko>풀 IntelliSense, Dev Kit 없이도</span></h4>
+        <p>
+          <span data-en>Cadenza doesn't ship its own language layer — it rides the base Roslyn LSP, so completion in VS Code, Cursor, Kiro and friends just lights up.</span>
+          <span data-ko>자체 언어 레이어를 만들지 않고 베이스 Roslyn LSP에 올라타기 때문에, VS Code, Cursor, Kiro 등에서 완성이 자연스럽게 점등됩니다.</span>
+        </p>
+      </div>
+      <div class="diff">
+        <h4><span data-en>Exact-version SDKs</span><span data-ko>정확 버전 SDK</span></h4>
+        <p>
+          <span data-en><code>#:sdk Foo@1.0.15</code> pins precisely — every machine sees the same SDK. This is reproducibility, not friction.</span>
+          <span data-ko><code>#:sdk Foo@1.0.15</code>는 정확히 고정합니다 — 모든 머신이 같은 SDK를 봅니다. 결함이 아니라 재현성입니다.</span>
+        </p>
+      </div>
+      <div class="diff">
+        <h4><span data-en>A growth path, not a dead end</span><span data-ko>막다른 길이 아닌 성장 경로</span></h4>
+        <p>
+          <span data-en>When the script outgrows the file, <code>dotnet project convert</code> graduates it into a full project — like a cadenza written down from improvisation.</span>
+          <span data-ko>스크립트가 파일 한 장을 벗어날 때, <code>dotnet project convert</code>가 그것을 풀 프로젝트로 졸업시킵니다 — 즉흥에서 출발해 악보로 적힌 카덴차처럼.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HONEST BOUNDARIES ─── -->
+<section id="bounds">
+  <div class="wrap">
+    <div class="bounds">
+      <div class="kicker"><span data-en>Honest boundaries</span><span data-ko>정직한 경계</span></div>
+      <h2>
+        <span data-en>When Cadenza isn't the right tool.</span>
+        <span data-ko>Cadenza가 답이 아닐 때.</span>
+      </h2>
+      <ul>
+        <li>
+          <span data-en>Multi-project solutions, library DLLs, or anything that needs a full <code>.csproj</code> — use the regular .NET project model.</span>
+          <span data-ko>다중 프로젝트 솔루션, DLL로 배포되는 라이브러리, 풀 <code>.csproj</code>가 필요한 경우엔 정규 .NET 프로젝트 모델을 쓰세요.</span>
+        </li>
+        <li>
+          <span data-en>Cadenza is for the case where <em>one file equals the whole program.</em></span>
+          <span data-ko>Cadenza는 <em>"단일 파일 = 프로그램 전체"</em>인 경우를 위한 도구입니다.</span>
+        </li>
+        <li>
+          <span data-en>Debugging inside a forked C# extension is restricted by the <code>vsdbg</code> license — for forks that need stepping, point at the <code>netcoredbg</code> path documented in the project.</span>
+          <span data-ko>포크 C# 확장의 디버깅은 <code>vsdbg</code> 라이선스 제약을 받습니다 — 스테핑이 필요한 포크는 프로젝트에 문서화된 <code>netcoredbg</code> 경로로 분기하세요.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA / FOOTER LEAD ─── -->
+<section id="cta" style="text-align:center">
+  <div class="wrap" style="max-width:780px">
+    <h2 style="margin: 0 auto 14px; max-width:none">
+      <span data-en>Write it. Run it. Ship it.</span>
+      <span data-ko>쓰고, 실행하고, 배포하라.</span>
+    </h2>
+    <p class="lead" style="margin: 0 auto 28px">
+      <span data-en>One file, playing solo — from your editor to a binary, or all the way to a container.</span>
+      <span data-ko>홀로 연주하는 단 하나의 파일 — 에디터에서 바이너리로, 또는 컨테이너까지.</span>
+    </p>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn primary" href="https://github.com/rkttu/cadenza" target="_blank" rel="noopener">
+        <span data-en>Star on GitHub</span><span data-ko>GitHub에서 스타</span> →
+      </a>
+      <a class="btn ghost" href="https://www.nuget.org/packages?q=Cadenza" target="_blank" rel="noopener">
+        <span data-en>Packages on NuGet</span><span data-ko>NuGet 패키지</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap row">
+    <div>
+      <div class="brand" style="margin-bottom:6px">
+        <span class="mark">cadenza</span>
+      </div>
+      <div class="small">
+        <span data-en>MIT licensed · Built for .NET 10+ · A solo for one file.</span>
+        <span data-ko>MIT 라이선스 · .NET 10+를 위해 · 한 파일을 위한 솔로.</span>
+      </div>
+    </div>
+    <div style="display:flex; gap:22px; flex-wrap:wrap">
+      <a href="https://github.com/rkttu/cadenza" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.nuget.org/packages?q=Cadenza" target="_blank" rel="noopener">NuGet</a>
+      <a href="https://github.com/rkttu/cadenza/tree/main/samples" target="_blank" rel="noopener">
+        <span data-en>Samples</span><span data-ko>샘플</span>
+      </a>
+      <a href="https://github.com/rkttu/cadenza/issues" target="_blank" rel="noopener">
+        <span data-en>Report an issue</span><span data-ko>이슈 보고</span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─── language toggle (EN default, KO opt-in, persisted) ───
+  (function () {
+    const html = document.documentElement;
+    const buttons = document.querySelectorAll('.lang button');
+    const stored = (function () {
+      try { return localStorage.getItem('cadenza-lang'); } catch { return null; }
+    })();
+
+    function setLang(lang) {
+      html.setAttribute('lang', lang);
+      buttons.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+      try { localStorage.setItem('cadenza-lang', lang); } catch {}
+    }
+
+    const initial = stored === 'ko' ? 'ko' : 'en';
+    setLang(initial);
+    buttons.forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+  })();
+
+  // ─── variant tabs ───
+  (function () {
+    const tabs = document.querySelectorAll('.var-tabs button');
+    const panels = document.querySelectorAll('.variant');
+    tabs.forEach(t => t.addEventListener('click', () => {
+      const key = t.dataset.variant;
+      tabs.forEach(x => x.classList.toggle('active', x === t));
+      panels.forEach(p => p.classList.toggle('active', p.dataset.variant === key));
+    }));
+  })();
+</script>
+
+</body>
+</html>
